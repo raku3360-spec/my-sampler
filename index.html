@@ -127,7 +127,7 @@ body:not(.ed) .xed{display:none}
     <label>ビブラート感度 <span id="lV2"></span></label><input type="range" id="cV2" min="0" max="1" step="0.01">
     <label>ビブラート幅（最大1オクターブ） <span id="lW2"></span></label><input type="range" id="cW2" min="0" max="1" step="0.005">
     <label>音量 <span id="lM2"></span></label><input type="range" id="cM2" min="0" max="1" step="0.01">
-    <label>手の検出しきい値 <span id="lT2"></span></label><input type="range" id="cT2" min="0.005" max="0.1" step="0.001">
+    <label>手の検出しきい値（簡易認識用） <span id="lT2"></span></label><input type="range" id="cT2" min="0.005" max="0.1" step="0.001">
     <label>距離（タッチ/マウス用） <span id="lZ2"></span></label><input type="range" id="cZ2" min="0" max="1" step="0.01">
     <div class="row"><button class="btn g" id="cCal">手の色を登録</button><button class="btn g" id="cCalR">色リセット</button><button class="btn g" id="cTest2">揺れテスト: OFF</button></div>
   </div>
@@ -605,7 +605,7 @@ if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission!=='funct
 
 /* ---------- Theremin (camera hand tracking) ---------- */
 const SKIN0={y0:40,cb0:77,cb1:127,cr0:133,cr1:173};
-const TH={src:null,cfg:{lo:48,span:3,hmax:1,vib:.6,vw:.35,vol:.5,thr:.02,zt:.6,skin:null},hand:false,x:.5,y:.5,z:0,midi:60,f:261.6,h:0,vol:0,vc:0,v:null,seen:0,lostAt:0,vid:$('vid'),px:null,py:null,r:null,mp:false,m:{x:.5,y:.5},trail:[],stream:null,st:''};
+const TH={src:null,cfg:{lo:48,span:3,hmax:1,vib:.6,vw:.35,vol:.5,thr:.02,zt:.6,skin:null},hand:false,x:.5,y:.5,z:0,midi:60,f:261.6,h:0,vol:0,vc:0,v:null,seen:0,lostAt:0,vid:$('vid'),px:null,py:null,r:null,mp:false,m:{x:.5,y:.5},trail:[],stream:null,st:'',eng:'skin',hr:null,mpState:'',busy:false};
 let thVis=false,thf=0,thm=0,ph2=0,ph3=0,tbuf=null,fbuf=null,lastData=null,bestL=-1;
 function ensureAn(){if(!an){an=ctx.createAnalyser();an.fftSize=2048;const z=ctx.createGain();z.gain.value=0;an.connect(z);z.connect(ctx.destination);SHP=new Float32Array(2048);for(let i=0;i<2048;i++)SHP[i]=Math.tanh(1.6*(i/1023.5-1))/Math.tanh(1.6)}}
 /* --- camera: skin-colour blob tracking on a 64x48 frame --- */
@@ -647,14 +647,15 @@ function calibrate(){
 async function useCam(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('この環境ではカメラを使えません。タッチ操作に切り替えます');setSrc('mouse');return}
   try{
-    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:320},height:{ideal:240}},audio:false});
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});
     camStop();TH.stream=st;TH.vid.srcObject=st;await TH.vid.play();setSrc('cam');
+    initMP().then(()=>{if(TH.src==='cam')TH.eng='mp'}).catch(()=>{TH.eng='skin';toast('MediaPipeを読み込めないため、簡易認識で動作します')});
   }catch(e){toast('カメラが許可されませんでした。タッチ操作に切り替えます');setSrc('mouse')}
 }
 function camStop(){if(TH.stream){TH.stream.getTracks().forEach(t=>t.stop());TH.stream=null}TH.vid.srcObject=null;TH.r=null;TH.px=null}
 function setSrc(s){
   if(TH.src==='cam'&&s!=='cam')camStop();
-  TH.src=s;TH.hand=false;TH.seen=0;TH.mp=false;
+  TH.src=s;TH.hand=false;TH.seen=0;TH.mp=false;TH.hr=null;TH.eng=(s==='cam'&&MPH)?'mp':'skin';
   $('thov').style.display=s?'none':'flex';$('th').classList.toggle('m',s==='mouse');syncTH();
 }
 /* --- voice --- */
@@ -690,9 +691,14 @@ function thFrame(){
   let seen=false,x=0,y=0,z=0;
   if(act){
     if(TH.src==='cam'){
-      if(++thf%2===0)TH.r=camStep();
-      const r=TH.r;
-      if(r){seen=true;x=r.x;y=r.y;const s1=.75-.5*c.vol;z=clamp((r.size-.10)/(s1-.10));TH.px=r.rx;TH.py=r.y}else TH.px=null;
+      if(TH.eng==='mp'){
+        mpStep();const r=TH.hr;
+        if(r&&now-r.t<300){seen=true;x=r.x;y=r.y;z=r.z;TH.px=r.rx;TH.py=r.y}else TH.px=null;
+      }else{
+        if(++thf%2===0)TH.r=camStep();
+        const r=TH.r;
+        if(r){seen=true;x=r.x;y=r.y;const s1=.75-.5*c.vol;z=clamp((r.size-.10)/(s1-.10));TH.px=r.rx;TH.py=r.y}else TH.px=null;
+      }
     }else if(TH.src==='mouse'){if(TH.mp){seen=true;x=TH.m.x;y=TH.m.y;z=c.zt}}
     else if(TH.src==='demo'){const t=now/1000;seen=true;x=.5+.38*Math.sin(t*.8);y=.5+.32*Math.sin(t*.55+1);z=clamp(.55+.4*Math.sin(t*.4))}
   }
@@ -708,7 +714,7 @@ function thFrame(){
   if(TH.hand&&!TH.v)thStart();else if(!TH.hand&&TH.v)thStop();
   if(TH.v)thUpdate();
   if(!thVis)return;
-  const st=!TH.src?'':TH.src==='demo'?'✨ デモ再生中':TH.hand?'✋ 手を検出中':(TH.src==='mouse'?'画面を押して演奏':'手をカメラにかざしてください');
+  const st=!TH.src?'':TH.src==='demo'?'✨ デモ再生中':TH.hand?(TH.eng==='mp'?'✋ 手を検出中（MediaPipe）':'✋ 手を検出中（簡易）'):(TH.src==='cam'&&TH.mpState==='load'?'手の認識モデルを読み込み中…':TH.src==='mouse'?'画面を押して演奏':'手をカメラにかざしてください');
   if(st!==TH.st){TH.st=st;$('thst').textContent=st}
   thDraw();if(EDIT&&++thm%3===0)thMeters();
 }
@@ -717,6 +723,38 @@ function thMeters(){
   setM('H2',TH.h*100,Math.round(TH.h*100)+'%');
   setM('Z2',TH.hand?TH.vol*100:0,TH.hand?Math.round(TH.vol*100)+'%':'—');
   setM('V2',Math.cbrt(TH.vc/1200)*100,'±'+fmtC(TH.vc));
+}
+/* --- MediaPipe Hands (CDN): 21-point hand skeleton --- */
+var MP_BASE='https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/',MPH=null,mpP=null;
+var HC=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
+function loadScript(u){return new Promise((res,rej)=>{const e=document.createElement('script');e.src=u;e.crossOrigin='anonymous';e.onload=res;e.onerror=()=>rej(new Error('script'));document.head.appendChild(e)})}
+function initMP(){
+  if(mpP)return mpP;
+  TH.mpState='load';
+  mpP=(async()=>{
+    if(!window.Hands)await loadScript(MP_BASE+'hands.js');
+    const h=new window.Hands({locateFile:f=>MP_BASE+f});
+    h.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.5,selfieMode:false});
+    h.onResults(mpResults);
+    await h.initialize();
+    MPH=h;TH.mpState='ok';return h;
+  })().catch(e=>{TH.mpState='fail';mpP=null;throw e});
+  return mpP;
+}
+/* 手のひらの中心(0,5,9,13,17の平均)→X/Y、手のひらの大きさ→Z（距離）*/
+function mpResults(r){
+  const L=r.multiHandLandmarks&&r.multiHandLandmarks[0];
+  if(!L){TH.hr=null;return}
+  const vw=TH.vid.videoWidth||640,vh=TH.vid.videoHeight||480;
+  let cx=0,cy=0;[0,5,9,13,17].forEach(i=>{cx+=L[i].x;cy+=L[i].y});cx/=5;cy/=5;
+  const d=(a,b)=>Math.hypot((L[a].x-L[b].x)*vw,(L[a].y-L[b].y)*vh)/vw;
+  const size=(d(0,9)+d(5,17)*1.15)/2,far=.045,near=.34-.2*TH.cfg.vol;
+  const z=clamp(Math.log(Math.max(size,.001)/far)/Math.log(near/far));
+  TH.hr={x:1-cx,rx:cx,y:cy,z,size,lm:L,t:performance.now()};
+}
+function mpStep(){
+  if(!MPH||TH.busy)return;const v=TH.vid;if(!v||v.readyState<2)return;
+  TH.busy=true;MPH.send({image:v}).catch(()=>{}).then(()=>{TH.busy=false});
 }
 /* --- visualizer --- */
 const hsl=(h,s,l,a)=>'hsla('+h+','+s+'%,'+l+'%,'+a+')';
@@ -727,7 +765,7 @@ function thDraw(){
   g.setTransform(dpr,0,0,dpr,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;g.shadowBlur=0;g.clearRect(0,0,W,H);
   const on=!!TH.v,span=c.span*12,px=TH.x*W,vol=on?TH.vol:0;
   ph2+=(4.5+XY.m*3)*Math.PI*2/60;
-  if(TH.src==='cam'&&TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.14;g.drawImage(TH.vid,0,0,W,H);if(TH.hand){g.globalAlpha=.25;g.drawImage(mc,0,0,W,H)}g.restore()}
+  if(TH.src==='cam'&&TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.14;g.drawImage(TH.vid,0,0,W,H);if(TH.hand&&TH.eng!=='mp'){g.globalAlpha=.25;g.drawImage(mc,0,0,W,H)}g.restore()}
   const gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,rgba(COL.ac,.22*c.hmax));gr.addColorStop(1,rgba(COL.ac,0));g.fillStyle=gr;g.fillRect(0,0,W,H);
   g.font='600 10px '+FONT;g.textBaseline='alphabetic';g.textAlign='left';
   for(let m=Math.ceil(c.lo);m<=c.lo+span;m++){
@@ -750,6 +788,11 @@ function thDraw(){
     let s=0;for(let i=1;i<tbuf.length/2;i++){if(tbuf[i-1]<0&&tbuf[i]>=0){s=i;break}}
     const N=Math.min(tbuf.length-s-1,Math.round(ctx.sampleRate/TH.f*2.5));
     if(N>8){g.globalAlpha=.9;g.lineWidth=2;g.beginPath();for(let i=0;i<N;i++){const x=i/(N-1)*W,y=py2-tbuf[s+i]*260;i?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()}
+  }
+  if(TH.eng==='mp'&&TH.src==='cam'&&TH.hr){
+    const L=TH.hr.lm;g.globalAlpha=.55;g.strokeStyle=COL.ac;g.lineWidth=2;g.lineCap='round';
+    HC.forEach(e=>{g.beginPath();g.moveTo((1-L[e[0]].x)*W,L[e[0]].y*H);g.lineTo((1-L[e[1]].x)*W,L[e[1]].y*H);g.stroke()});
+    g.fillStyle=COL.ac;L.forEach(p=>{g.beginPath();g.arc((1-p.x)*W,p.y*H,2.5,0,7);g.fill()});
   }
   const R=18+vol*34+(on?3*Math.sin(ph2*2):0);
   g.globalAlpha=on?1:.4;g.fillStyle=rgba(COL.ac,.18);g.strokeStyle=COL.ac;g.lineWidth=2;g.beginPath();g.arc(px,py2,R,0,7);g.fill();g.stroke();
