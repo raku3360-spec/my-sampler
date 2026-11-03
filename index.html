@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f4f5f8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sampler">
+<meta name="application-name" content="Pocket Sampler">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>POCKET SAMPLER</title>
+<style>
+:root{--bg:#f4f5f8;--card:#fff;--ink:#1c1f26;--sub:#8a90a0;--ac:#3b6cff;--act:#e4ebff;--line:#e6e8ee;--sh:0 2px 8px rgba(30,40,70,.08),0 1px 2px rgba(30,40,70,.06);--dng:#e5484d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161b;--card:#1f232b;--ink:#eef0f5;--sub:#8b92a3;--act:#26335e;--line:#2c313c;--sh:0 2px 8px rgba(0,0,0,.4);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14161b;--card:#1f232b;--ink:#eef0f5;--sub:#8b92a3;--act:#26335e;--line:#2c313c;--sh:0 2px 8px rgba(0,0,0,.4);color-scheme:dark}
+html,body{overscroll-behavior:none}
+html{height:100%;-webkit-touch-callout:none;-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;height:100%;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;user-select:none;-webkit-user-select:none;overflow:hidden;touch-action:manipulation}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+header{display:flex;align-items:center;gap:8px;padding:10px 14px 4px}
+#pb{flex:1;text-align:left;font-weight:700;font-size:16px;padding:8px 12px;background:var(--card);border-radius:12px;box-shadow:var(--sh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pb small{color:var(--sub);font-weight:500;margin-right:6px}
+.ib{width:40px;height:40px;border-radius:12px;background:var(--card);box-shadow:var(--sh);font-size:18px}
+#hint{margin:0;padding:2px 16px;font-size:12px;color:var(--sub);min-height:18px}
+.sc{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.sc::-webkit-scrollbar{display:none}
+.pg{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:10px;padding:8px 14px 10px}
+.pad{position:relative;background:var(--card);border-radius:18px;box-shadow:var(--sh);touch-action:pan-x;display:flex;flex-direction:column;justify-content:flex-end;padding:8px 9px;min-height:0;transition:transform .06s,background .08s;border:1.5px solid transparent}
+.pad.dn,.pad.on{background:var(--act);border-color:var(--ac)}
+.pad.dn{transform:scale(.96)}
+.num{position:absolute;left:10px;top:8px;font-size:11px;color:var(--sub);font-weight:600}
+.sc.edit .pad{border:1.5px dashed var(--ac)}.sc.edit .pad:active{background:var(--act)}
+.bar{display:flex;justify-content:center;padding:0 0 12px}
+.mode{display:flex;gap:4px;padding:4px;background:var(--card);border-radius:16px;box-shadow:var(--sh)}
+.mode button{padding:11px 26px;border-radius:12px;font-weight:700;font-size:14px;color:var(--sub)}
+.mode button.on{background:var(--ac);color:#fff}
+body:not(.ed) header{display:none}
+#hint:empty{display:none}
+.pad{min-width:0;overflow:hidden}
+.nm,.tg{display:block;min-width:0}
+.bar{gap:10px;align-items:center}
+.nm{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none}
+.tg{font-size:10px;color:var(--sub);pointer-events:none;min-height:13px}
+.pad.has .tg{color:var(--ac)}
+.pad:not(.has) .nm::before{content:"＋";color:var(--sub);font-weight:400;font-size:20px}
+.foot{display:flex;justify-content:center;align-items:center;gap:6px;padding:4px 0 10px;font-size:12px;color:var(--sub)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.dot.a{background:var(--ac);width:18px;border-radius:4px}
+#ov{position:fixed;inset:0;background:rgba(10,15,30,.35);display:none;align-items:flex-end;z-index:9}
+#ov.show{display:flex}
+.sheet{display:none;width:100%;max-height:85%;overflow-y:auto;background:var(--card);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
+.sheet.show{display:block}
+h3{margin:0 0 12px;font-size:17px}
+label{display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin:14px 0 6px;font-weight:600}
+.btn{width:100%;padding:12px;border-radius:12px;background:var(--ac);color:#fff;font-weight:700}
+.btn.g{background:var(--bg);color:var(--ink)}
+.btn.d{background:var(--bg);color:var(--dng)}
+.sub{font-size:12px;color:var(--sub);margin-top:6px;word-break:break-all}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:3px}
+.seg button{flex:1;padding:9px 4px;border-radius:9px;font-size:13px;font-weight:600;color:var(--sub)}
+.seg button.on{background:var(--card);color:var(--ac);box-shadow:var(--sh)}
+input[type=range]{width:100%;accent-color:var(--ac);height:32px}
+input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;user-select:text;-webkit-user-select:text}
+.row{display:flex;gap:8px;margin-top:14px}
+.row .btn{flex:1}
+.pi{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.pi button:first-child{flex:1;text-align:left;padding:10px 4px;font-weight:600}
+.pi button:last-child{color:var(--dng);padding:10px}
+#toast{position:fixed;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1c1f26;color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+#toast.s{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <button id="pb"></button>
+  <button class="ib" id="addPg" aria-label="ページ追加">＋</button>
+</header>
+<p id="hint"></p>
+<main class="sc" id="sc"></main>
+<div class="foot"><span id="dots" style="display:flex;gap:6px"></span><span id="pc"></span></div>
+<div class="bar"><div class="mode" id="mode"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="stopAll" aria-label="全停止">■</button></div>
+
+<div id="ov">
+  <section class="sheet" id="setS">
+    <h3 id="sT"></h3>
+    <button class="btn" id="pick">音声ファイルを選ぶ（WAV / MP3）</button>
+    <input type="file" id="fi" accept="audio/*,.wav,.mp3" hidden>
+    <div class="sub" id="fn"></div>
+    <label>再生方法</label>
+    <div class="seg" id="sMode"><button data-v="hold">押している間</button><button data-v="full">最後まで再生</button></div>
+    <label>再生タイプ</label>
+    <div class="seg" id="sLoop"><button data-v="0">ワンショット</button><button data-v="1">ループ</button></div>
+    <div class="sub" id="mh"></div>
+    <label>音量 <span id="vv"></span></label>
+    <input type="range" id="vol" min="0" max="1" step="0.01">
+    <div class="row"><button class="btn g" id="test">試聴</button><button class="btn d" id="clr">削除</button><button class="btn g" id="cl1">閉じる</button></div>
+  </section>
+  <section class="sheet" id="preS">
+    <h3>プリセット</h3>
+    <input type="text" id="pn" placeholder="プリセット名" maxlength="30">
+    <div class="row"><button class="btn" id="psave">この名前で保存</button></div>
+    <label>保存済み</label>
+    <div id="pl"></div>
+    <div class="row"><button class="btn g" id="pnew">新規</button><button class="btn d" id="pdel">このページを削除</button><button class="btn g" id="cl2">閉じる</button></div>
+  </section>
+</div>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const MAXP=10,N=12;
+let ctx=null,master=null,S={name:'',pages:[]},cur=null,EDIT=false;
+const held=new Map();
+
+/* ---------- IndexedDB ---------- */
+const dbp=new Promise(r=>{try{const q=indexedDB.open('pocket-sampler',1);q.onupgradeneeded=()=>q.result.createObjectStore('p');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
+const tx=(m,fn)=>dbp.then(d=>new Promise((res,rej)=>{if(!d)return rej();const t=d.transaction('p',m);const rq=fn(t.objectStore('p'));t.oncomplete=()=>res(rq.result);t.onerror=()=>rej()}));
+const dbGet=k=>tx('readonly',s=>s.get(k)),dbPut=(k,v)=>tx('readwrite',s=>s.put(v,k)),dbDel=k=>tx('readwrite',s=>s.delete(k)),dbKeys=()=>tx('readonly',s=>s.getAllKeys());
+
+/* ---------- Audio ---------- */
+function ac(){
+  if(!ctx){const C=window.AudioContext||window.webkitAudioContext;ctx=new C({latencyHint:'interactive'});master=ctx.createGain();master.connect(ctx.destination)}
+  if(ctx.state!=='running'&&ctx.state!=='closed')ctx.resume().catch(()=>{});
+  return ctx;
+}
+let silent;
+function silentWav(){const n=800,b=new DataView(new ArrayBuffer(44+n));const w=(o,s)=>[...s].forEach((c,i)=>b.setUint8(o+i,c.charCodeAt(0)));w(0,'RIFF');b.setUint32(4,36+n,true);w(8,'WAVEfmt ');b.setUint32(16,16,true);b.setUint16(20,1,true);b.setUint16(22,1,true);b.setUint32(24,8000,true);b.setUint32(28,8000,true);b.setUint16(32,1,true);b.setUint16(34,8,true);w(36,'data');b.setUint32(40,n,true);for(let i=0;i<n;i++)b.setUint8(44+i,128);return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))}
+/* 最初のタップで AudioContext を確実に有効化（iOSのサイレントスイッチ対策も含む） */
+function unlock(){
+  if(ctx&&ctx.state==='running')return;
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+  ac();
+  try{const s=ctx.createBufferSource();s.buffer=ctx.createBuffer(1,1,22050);s.connect(ctx.destination);s.start(0)}catch(e){}
+  try{if(!silent){silent=new Audio(silentWav());silent.loop=true}silent.play().catch(()=>{})}catch(e){}
+}
+['pointerdown','touchstart','touchend','click','keydown'].forEach(t=>addEventListener(t,unlock,true));
+const decode=d=>new Promise((res,rej)=>{const p=ac().decodeAudioData(d.slice(0),res,rej);if(p&&p.catch)p.catch(rej)});
+function setOn(pad,v){if(pad.el)pad.el.classList.toggle('on',v)}
+function start(pad){
+  if(!pad.b)return;
+  ac();stop(pad);
+  const s=ctx.createBufferSource(),g=ctx.createGain();
+  s.buffer=pad.b;s.loop=pad.loop;g.gain.value=pad.vol;
+  s.connect(g);g.connect(master);
+  s.onended=()=>{if(pad.a&&pad.a.s===s){pad.a=null;setOn(pad,false)}};
+  s.start();pad.a={s,g};setOn(pad,true);
+}
+function stop(pad){
+  if(!pad.a)return;
+  const{s,g}=pad.a;pad.a=null;setOn(pad,false);
+  try{g.gain.setTargetAtTime(0,ctx.currentTime,0.01);s.stop(ctx.currentTime+0.06)}catch(e){}
+}
+function stopAll(){S.pages.forEach(pg=>pg.forEach(stop))}
+
+/* ---------- State ---------- */
+const blank=()=>({n:'',d:null,mode:'full',loop:false,vol:0.8,b:null,a:null,el:null});
+const blankPage=()=>Array.from({length:N},blank);
+function serialize(){return{name:S.name,pages:S.pages.map(pg=>pg.map(p=>({n:p.n,d:p.d,mode:p.mode,loop:p.loop,vol:p.vol})))}}
+async function load(o){
+  stopAll();
+  const pages=[];
+  for(const pg of o.pages){
+    const row=[];
+    for(let i=0;i<N;i++){
+      const pad=Object.assign(blank(),pg[i]||{});
+      if(pad.d)pad.b=await decode(pad.d).catch(()=>null);
+      row.push(pad);
+    }
+    pages.push(row);
+  }
+  S={name:o.name||'',pages:pages.length?pages:[blankPage()]};
+  render();
+}
+let tm;const autosave=()=>{clearTimeout(tm);tm=setTimeout(()=>dbPut('__work__',serialize()).catch(()=>{}),500)};
+
+/* ---------- Render ---------- */
+function updPad(pad){
+  const el=pad.el;if(!el)return;
+  el.classList.toggle('has',!!pad.b);
+  el.querySelector('.nm').textContent=pad.b?pad.n:'';
+  el.querySelector('.tg').textContent=pad.b?((pad.mode==='hold'?'HOLD':'FULL')+(pad.loop?' ∞ LOOP':' · ONE')):'';
+}
+function render(){
+  const sc=$('sc');sc.innerHTML='';
+  S.pages.forEach((pg,p)=>{
+    const d=document.createElement('div');d.className='pg';
+    pg.forEach((pad,i)=>{
+      const el=document.createElement('div');el.className='pad';el.dataset.p=p;el.dataset.i=i;
+      el.innerHTML='<span class="num"></span><span class="nm"></span><span class="tg"></span>';
+      el.querySelector('.num').textContent=i+1;
+      pad.el=el;d.append(el);updPad(pad);
+    });
+    sc.append(d);
+  });
+  $('pb').innerHTML='<small>♪</small>';
+  $('pb').append(S.name||'無題のプリセット');
+  updHint();
+  dots();
+}
+function updHint(){$('hint').textContent=EDIT?'編集モード：パッドをタップして設定':(S.pages.some(pg=>pg.some(p=>p.b))?'':'下の「編集」に切り替えて、パッドに音声を割り当てましょう')}
+const curPage=()=>Math.max(0,Math.min(S.pages.length-1,Math.round($('sc').scrollLeft/($('sc').clientWidth||1))));
+function dots(){
+  const c=curPage(),d=$('dots');d.innerHTML='';
+  S.pages.forEach((_,i)=>{const e=document.createElement('i');e.className='dot'+(i===c?' a':'');d.append(e)});
+  $('pc').textContent=(c+1)+' / '+S.pages.length;
+}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('s');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('s'),1600)}
+const padOf=el=>S.pages[+el.dataset.p][+el.dataset.i];
+
+/* ---------- Pad touch ---------- */
+const sc=$('sc');
+sc.addEventListener('pointerdown',e=>{
+  if(EDIT)return;
+  const el=e.target.closest('.pad');if(!el)return;
+  const pad=padOf(el);
+  if(!pad.b)return;
+  el.classList.add('dn');held.set(e.pointerId,pad);
+  if(pad.mode==='hold')start(pad);
+  else if(pad.loop&&pad.a)stop(pad);
+  else start(pad);
+});
+function release(e){
+  const pad=held.get(e.pointerId);if(!pad)return;
+  held.delete(e.pointerId);
+  pad.el.classList.remove('dn');
+  if(pad.mode==='hold')stop(pad);
+}
+addEventListener('pointerup',release);addEventListener('pointercancel',release);
+sc.addEventListener('contextmenu',e=>e.preventDefault());
+sc.addEventListener('scroll',dots,{passive:true});
+sc.addEventListener('click',e=>{
+  if(!EDIT)return;
+  const el=e.target.closest('.pad');if(!el)return;
+  openSet(padOf(el),el);
+});
+$('mode').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  EDIT=b.dataset.m==='edit';
+  stopAll();hide();
+  sc.classList.toggle('edit',EDIT);document.body.classList.toggle('ed',EDIT);
+  [...$('mode').children].forEach(x=>x.classList.toggle('on',x===b));
+  updHint();
+};
+
+/* ---------- Sheets ---------- */
+function show(id){$('ov').classList.add('show');$('setS').classList.toggle('show',id==='setS');$('preS').classList.toggle('show',id==='preS')}
+function hide(){$('ov').classList.remove('show');if(cur){stop(cur.pad);cur=null}}
+$('ov').addEventListener('click',e=>{if(e.target.id==='ov')hide()});
+$('cl1').onclick=$('cl2').onclick=hide;
+
+function syncSet(){
+  const p=cur.pad;
+  $('fn').textContent=p.b?('♪ '+p.n):'音声が未設定です';
+  [...$('sMode').children].forEach(b=>b.classList.toggle('on',b.dataset.v===p.mode));
+  [...$('sLoop').children].forEach(b=>b.classList.toggle('on',(b.dataset.v==='1')===p.loop));
+  $('mh').textContent=(p.mode==='hold'?'押している間だけ鳴り、離すと止まります。':'1回押すと最後まで再生します。')+(p.loop?(p.mode==='full'?' もう一度押すと停止します。':' 押している間くり返します。'):'');
+  $('vv').textContent=Math.round(p.vol*100)+'%';$('vol').value=p.vol;
+  updPad(p);autosave();
+}
+function openSet(pad,el){
+  cur={pad};
+  $('sT').textContent='パッド '+(+el.dataset.p+1)+'-'+(+el.dataset.i+1)+' の設定';
+  syncSet();show('setS');
+}
+$('pick').onclick=()=>{ac();$('fi').click()};
+$('fi').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';
+  if(!f||!cur)return;
+  try{
+    const d=await f.arrayBuffer();
+    const b=await decode(d);
+    const p=cur.pad;stop(p);p.d=d;p.b=b;p.n=f.name.replace(/\.[^.]+$/,'');
+    syncSet();updHint();
+  }catch(err){toast('この音声は読み込めませんでした')}
+};
+$('sMode').onclick=e=>{const b=e.target.closest('button');if(!b||!cur)return;cur.pad.mode=b.dataset.v;stop(cur.pad);syncSet()};
+$('sLoop').onclick=e=>{const b=e.target.closest('button');if(!b||!cur)return;cur.pad.loop=b.dataset.v==='1';stop(cur.pad);syncSet()};
+$('vol').oninput=e=>{
+  const p=cur.pad;p.vol=+e.target.value;$('vv').textContent=Math.round(p.vol*100)+'%';
+  if(p.a)p.a.g.gain.value=p.vol;autosave();
+};
+$('test').onclick=()=>{const p=cur.pad;p.a?stop(p):start(p)};
+$('clr').onclick=()=>{
+  const p=cur.pad;stop(p);p.d=null;p.b=null;p.n='';syncSet();
+  updHint();
+};
+
+/* ---------- Presets / pages ---------- */
+async function listPresets(){
+  const box=$('pl');box.innerHTML='';
+  let keys=[];try{keys=(await dbKeys()).filter(k=>k!=='__work__')}catch(e){}
+  if(!keys.length){box.innerHTML='<div class="sub">まだありません</div>';return}
+  keys.forEach(k=>{
+    const r=document.createElement('div');r.className='pi';
+    const a=document.createElement('button');a.textContent=k;
+    a.onclick=async()=>{const o=await dbGet(k);if(o){await load(o);$('pn').value=o.name;hide();toast('読み込みました')}};
+    const d=document.createElement('button');d.textContent='削除';
+    d.onclick=()=>twoTap(d,'本当に削除',async()=>{await dbDel(k);listPresets()});
+    r.append(a,d);box.append(r);
+  });
+}
+$('pb').onclick=()=>{$('pn').value=S.name;listPresets();show('preS')};
+$('psave').onclick=async()=>{
+  const name=$('pn').value.trim()||'無題';
+  S.name=name;
+  try{await dbPut(name,serialize());await dbPut('__work__',serialize());toast('「'+name+'」を保存しました')}
+  catch(e){toast('保存に失敗しました')}
+  render();listPresets();
+};
+$('pnew').onclick=()=>{stopAll();S={name:'',pages:[blankPage()]};$('pn').value='';render();autosave();hide()};
+/* confirm() は埋め込み環境で使えないため、2回タップで確定する方式 */
+function twoTap(btn,label,fn){
+  if(btn._arm){clearTimeout(btn._t);btn._arm=false;btn.textContent=btn._orig;fn();return}
+  btn._orig=btn.textContent;btn._arm=true;btn.textContent=label;
+  btn._t=setTimeout(()=>{btn._arm=false;btn.textContent=btn._orig},3000);
+}
+$('pdel').onclick=()=>{
+  if(S.pages.length<2){toast('最後のページは削除できません');return}
+  twoTap($('pdel'),'もう一度タップで削除',()=>{
+    const c=curPage();
+    S.pages[c].forEach(stop);S.pages.splice(c,1);render();
+    sc.scrollTo({left:Math.min(c,S.pages.length-1)*sc.clientWidth});dots();autosave();hide();
+    toast((c+1)+'ページ目を削除しました');
+  });
+};
+$('addPg').onclick=()=>{
+  if(S.pages.length>=MAXP){toast('ページは'+MAXP+'個までです');return}
+  S.pages.push(blankPage());render();
+  sc.scrollTo({left:sc.scrollWidth,behavior:'smooth'});autosave();
+};
+$('stopAll').onclick=stopAll;
+
+/* ---------- Init ---------- */
+S.pages=[blankPage()];render();
+dbGet('__work__').then(o=>{if(o&&o.pages)load(o)}).catch(()=>{});
+/* ---------- PWA: Service Worker ---------- */
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
