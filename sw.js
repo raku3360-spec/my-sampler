@@ -1,6 +1,7 @@
 // オフラインでも起動できるよう、アプリ本体をキャッシュします。
 // index.html を更新したら VERSION を上げてください。
-const VERSION = 'sampler-v3';
+// build:theremin（内容を変えて更新を検知させるための印）
+const VERSION = 'sampler-v5';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
