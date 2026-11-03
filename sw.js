@@ -1,7 +1,7 @@
 // オフラインでも起動できるよう、アプリ本体と MediaPipe のファイルをキャッシュします。
 // index.html を更新したら VERSION を上げてください。
-// build: theremin-sampler + livesets（内容を変えて更新を検知させるための印）
-const VERSION = 'sampler-v7';
+// build: swipe-only pages
+const VERSION = 'sampler-v9';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

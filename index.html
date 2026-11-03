@@ -112,10 +112,6 @@ body:not(.ed) .xed{display:none}
 .pc2{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--sub)}
 .pc2 button{width:36px;height:36px;border-radius:10px;background:var(--card);box-shadow:var(--sh);font-size:16px}
 body:not(.ed) .pgbar .ed{display:none}
-#nv{position:fixed;right:1px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:5}
-#nv button{width:14px;height:20px;position:relative}
-#nv button::after{content:"";position:absolute;left:4px;top:7px;width:5px;height:5px;border-radius:3px;background:var(--line)}
-#nv button.a::after{background:var(--ac);height:11px;top:4px}
 #tsw{position:relative;width:100%;height:100%}
 #tsg{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:10px}
 #tsc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
@@ -127,12 +123,28 @@ body.ed #tsov{display:none!important}
 .lsw{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:16px 16px 8px}
 .lsw h3{margin:0 0 8px;letter-spacing:.12em}
 .lsw .pi button:first-child{font-size:15px}
+.ib svg{width:20px;height:20px;display:block;margin:auto;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fnb{touch-action:none;-webkit-touch-callout:none}
+#fnp{position:fixed;inset:0;z-index:30;display:none;background:rgba(0,0,0,.35)}
+#fnp.show{display:block}
+.fnl{position:absolute;min-width:224px;padding:6px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.7)}
+.fni{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:11px;font-size:15px;font-weight:600;color:var(--sub)}
+.fni::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--line);flex:none}
+.fni.cur{color:var(--ink)}
+.fni.cur::before{background:var(--ac)}
+.fni.hv{background:var(--ac);color:var(--on)}
+.fni.hv::before{background:var(--on)}
+.pgd{display:flex;gap:6px;align-items:center}
+#sts,#s0,#s2{touch-action:pan-y}
+@keyframes pgInL{from{transform:translateX(28px);opacity:.25}to{transform:none;opacity:1}}
+@keyframes pgInR{from{transform:translateX(-28px);opacity:.25}to{transform:none;opacity:1}}
+.pgL{animation:pgInL .22s ease-out}.pgR{animation:pgInR .22s ease-out}
 </style>
 </head>
 <body>
 <div id="v">
 <section class="scr" id="sts">
-  <div class="pgbar" data-k="ts"><button class="pn ed" data-a="pre"></button><div class="pc2"><button data-a="prev">‹</button><span></span><button data-a="next">›</button><button class="ed" data-a="add">＋</button></div></div>
+  <div class="pgbar" data-k="ts"><button class="pn ed" data-a="pre"></button><div class="pc2"><span class="pgd"></span><span class="pgt"></span><button class="ed" data-a="add">＋</button></div></div>
   <div class="xyw"><div id="tsw"><div id="tsg"></div><canvas id="tsc"></canvas><div id="tsov"><p id="tsmsg"></p><button class="btn" id="tsCam" style="width:auto;padding:12px 22px"></button></div></div></div>
   <div class="xed" id="xed3">
     <div class="mt"><span>VOLUME</span><i><b id="mT1"></b></i><em id="vT1"></em></div>
@@ -142,13 +154,13 @@ body.ed #tsov{display:none!important}
     <label>距離→音量の感度 <span id="lDS"></span></label><input type="range" id="cDS" min="0" max="1" step="0.01">
     <label>揺れ→音量の感度 <span id="lSK"></span></label><input type="range" id="cSK" min="0" max="1" step="0.01">
   </div>
-  <div class="bar"><button class="ib" id="toTH2" aria-label="テルミンへ">◎</button><div class="mode" id="mode4"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="tsMute" aria-label="全ミュート">■</button><button class="ib sensb" id="sens3" aria-label="モーションセンサー">📳</button></div>
+  <div class="bar"><button class="ib fnb" aria-label="機能切り替え（長押しでメニュー）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button><div class="mode" id="mode4"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="tsMute" aria-label="全ミュート">■</button><button class="ib sensb" id="sens3" aria-label="モーションセンサー"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4.5 9v6M19.5 9v6"/></svg></button></div>
 </section>
 <section class="scr" id="s0">
-  <div class="pgbar" data-k="th"><button class="pn ed" data-a="pre"></button><div class="pc2"><button data-a="prev">‹</button><span></span><button data-a="next">›</button><button class="ed" data-a="add">＋</button></div></div>
+  <div class="pgbar" data-k="th"><button class="pn ed" data-a="pre"></button><div class="pc2"><span class="pgd"></span><span class="pgt"></span><button class="ed" data-a="add">＋</button></div></div>
   <div class="xyw"><div id="th"><canvas id="cv2"></canvas><video id="vid" playsinline muted autoplay></video><div id="thst"></div>
     <div id="thov"><h3>テルミン風 空間演奏</h3><p id="thmsg"></p><p>手のひらをカメラに向けて動かします。<br>上下＝ピッチ（下ほど高い） ／ 左＝倍音が増える ／ 近づく＝音が大きくなる<br>手が外れると自動でミュートされます。</p>
-      <button class="btn" id="ovCam">📷 カメラを許可する</button></div></div></div>
+      <button class="btn" id="ovCam">カメラを許可する</button></div></div></div>
   <div class="xed" id="xed2">
     <div class="mt"><span>PITCH</span><i><b id="mP2"></b></i><em id="vP2"></em></div>
     <div class="mt"><span>HARMONICS</span><i><b id="mH2"></b></i><em id="vH2"></em></div>
@@ -164,7 +176,7 @@ body.ed #tsov{display:none!important}
     <label>音量 <span id="lM2"></span></label><input type="range" id="cM2" min="0" max="1" step="0.01">
     <div class="row"><button class="btn g" id="cTest2">揺れテスト: OFF</button></div>
   </div>
-  <div class="bar"><button class="ib" id="toS3" aria-label="サンプラーへ">▦</button><div class="mode" id="mode3"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="camb" aria-label="カメラ">📷</button><button class="ib sensb" id="sens2" aria-label="モーションセンサー">📳</button></div>
+  <div class="bar"><button class="ib fnb" aria-label="機能切り替え（長押しでメニュー）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button><div class="mode" id="mode3"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="camb" aria-label="カメラのオン/オフ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg></button><button class="ib sensb" id="sens2" aria-label="モーションセンサー"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4.5 9v6M19.5 9v6"/></svg></button></div>
 </section>
 <section class="scr" id="s1">
 <header>
@@ -174,10 +186,10 @@ body.ed #tsov{display:none!important}
 <p id="hint"></p>
 <main class="sc" id="sc"></main>
 <div class="foot"><span id="dots" style="display:flex;gap:6px"></span><span id="pc"></span></div>
-<div class="bar"><button class="ib" id="toTH" aria-label="テルミンへ" style="font-size:18px">◎</button><button class="ib" id="toXY" aria-label="XYパッドへ" style="font-size:14px;font-weight:700">XY</button><div class="mode" id="mode"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="stopAll" aria-label="全停止">■</button></div>
+<div class="bar"><button class="ib fnb" aria-label="機能切り替え（長押しでメニュー）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button><div class="mode" id="mode"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="stopAll" aria-label="全停止">■</button></div>
 </section>
 <section class="scr" id="s2">
-  <div class="pgbar" data-k="xy"><button class="pn ed" data-a="pre"></button><div class="pc2"><button data-a="prev">‹</button><span></span><button data-a="next">›</button><button class="ed" data-a="add">＋</button></div></div>
+  <div class="pgbar" data-k="xy"><button class="pn ed" data-a="pre"></button><div class="pc2"><span class="pgd"></span><span class="pgt"></span><button class="ed" data-a="add">＋</button></div></div>
   <div class="xyw"><div id="xy"><canvas id="cv"></canvas></div></div>
   <div class="xed" id="xed">
     <div class="mt"><span>PITCH</span><i><b id="mP"></b></i><em id="vP"></em></div>
@@ -194,7 +206,7 @@ body.ed #tsov{display:none!important}
     <label>スケール</label><div class="chips" id="cSc"></div>
     <div class="row"><button class="btn g" id="cSnap"></button><button class="btn g" id="cTest">揺れテスト: OFF</button></div>
   </div>
-  <div class="bar"><button class="ib" id="toS" aria-label="サンプラーへ">▦</button><div class="mode" id="mode2"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib sensb" id="sens" aria-label="モーションセンサー">📳</button></div>
+  <div class="bar"><button class="ib fnb" aria-label="機能切り替え（長押しでメニュー）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button><div class="mode" id="mode2"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib sensb" id="sens" aria-label="モーションセンサー"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4.5 9v6M19.5 9v6"/></svg></button></div>
 </section>
 <section class="scr" id="s3">
   <div class="lsw">
@@ -206,10 +218,10 @@ body.ed #tsov{display:none!important}
     <label>保存済み</label>
     <div id="lsl"></div>
   </div>
-  <div class="bar"><button class="ib" id="toXY2" aria-label="XYパッドへ" style="font-size:14px;font-weight:700">XY</button></div>
+  <div class="bar"><button class="ib fnb" aria-label="機能切り替え（長押しでメニュー）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button></div>
 </section>
 </div>
-<nav id="nv"></nav>
+<div id="fnp"><div class="fnl" id="fnl"></div></div>
 
 <div id="ov">
   <section class="sheet" id="setS">
@@ -471,14 +483,14 @@ xyEl.addEventListener('click',()=>reqMotion());
 xyEl.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(document.hidden){XY.id=null;xyStop()}});
 /* motion sensor / mouse fallback */
-const SST={idle:'センサー：画面を1回タップすると許可を求めます（📳でも可）',wait:'センサー：接続中…',on:'センサー：有効（端末を動かすと揺れます）',denied:'センサー：許可されませんでした',none:'センサー信号なし（揺れテストで効果を確認できます）'};
+const SST={idle:'センサー：最初のタップで許可を求めます（右下のアイコンでも可）',wait:'センサー：接続中…',on:'センサー：有効（端末を動かすと揺れます）',denied:'センサー：許可されませんでした',none:'センサー信号なし（揺れテストで効果を確認できます）'};
 function sensUI(){document.querySelectorAll('.sensb').forEach(b=>b.classList.toggle('on',XY.sens==='on'));$('sst').textContent=$('sst2').textContent=SST[XY.sens]}
 function reqMotion(){
   if(XY.sens==='on')return;
   const D=window.DeviceMotionEvent;
   if(!D){XY.sens='none';sensUI();return}
   if(typeof D.requestPermission==='function'){
-    D.requestPermission().then(r=>{if(r==='granted')listen();else{XY.sens='denied';sensUI();toast('モーションセンサーが許可されませんでした')}}).catch(()=>{XY.sens='idle';sensUI()});
+    D.requestPermission().then(r=>{if(r==='granted')listen();else{XY.sens='denied';sensUI();toast('モーションセンサーが許可されませんでした（端末の設定で許可すると有効になります）')}}).catch(()=>{XY.tries=(XY.tries||0)+1;XY.sens=XY.tries>=3?'denied':'idle';sensUI()});
   }else listen();
 }
 function listen(){
@@ -544,8 +556,7 @@ function draw(){
   if(!W||!H)return;
   if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
   g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
-  const gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,rgba(COL.ac,.22*c.hmax));gr.addColorStop(1,rgba(COL.ac,0));g.fillStyle=gr;g.fillRect(0,0,W,H);
-  g.font='600 10px '+FONT;g.textBaseline='alphabetic';g.textAlign='left';
+    g.font='600 10px '+FONT;g.textBaseline='alphabetic';g.textAlign='left';
   const span=c.span*12;
   const K=c.key>=0;
   for(let m=Math.ceil(c.lo);m<=c.lo+span;m++){
@@ -563,19 +574,19 @@ function draw(){
   const wob=on?Math.sin(ph)*Math.min(40,vibCents()/100*H/span):0,py2=py+wob;
   g.strokeStyle=COL.ac;g.globalAlpha=on?.3:.15;g.lineWidth=1;g.setLineDash([4,5]);
   g.beginPath();g.moveTo(px,0);g.lineTo(px,H);g.moveTo(0,py);g.lineTo(W,py);g.stroke();g.setLineDash([]);
+  harmFx(g,{px,py:py2,h:on?XY.h:0,lvl:1,on,ph,pts:PTS.xy,R:22});
   if(on){
     if(!buf||buf.length!==an.fftSize)buf=new Float32Array(an.fftSize);
     an.getFloatTimeDomainData(buf);
     let s=0;for(let i=1;i<buf.length/2;i++){if(buf[i-1]<0&&buf[i]>=0){s=i;break}}
     const n=Math.min(buf.length-s-1,Math.round(ctx.sampleRate/XY.f*2.5));
-    if(n>8){g.globalAlpha=.9;g.lineWidth=2;g.beginPath();for(let i=0;i<n;i++){const x=i/(n-1)*W,y=py2-buf[s+i]*85;i?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()}
+    if(n>8)waveFx(g,buf,s,n,W,py2,85,XY.h,ph);
   }
   g.globalAlpha=on?1:.4;
   const R=on?22+3*Math.sin(ph*2):20;
   g.fillStyle=rgba(COL.ac,.18);g.strokeStyle=COL.ac;g.lineWidth=2;g.beginPath();g.arc(px,py2,R,0,7);g.fill();g.stroke();
   g.fillStyle=COL.ac;g.beginPath();g.arc(px,py2,4,0,7);g.fill();
-  const sat=Math.round(XY.h*6);
-  for(let i=0;i<sat;i++){const a=ph*.4+i*Math.PI*2/sat;g.beginPath();g.arc(px+Math.cos(a)*(R+14),py2+Math.sin(a)*(R+14),3,0,7);g.fill()}
+  satFx(g,px,py2,R,XY.h,ph);
   g.globalAlpha=1;g.textAlign='left';
   if(on){
     g.fillStyle=COL.ink;g.font='700 28px '+FONT;g.fillText(nn(XY.midi),14,40);
@@ -598,8 +609,6 @@ function frame(){
 }
 try{new IntersectionObserver(es=>{vis=es[es.length-1].isIntersecting},{threshold:.3}).observe($('s2'))}catch(e){vis=true}
 /* screen switching */
-$('toXY').onclick=()=>$('s2').scrollIntoView({behavior:'smooth'});
-$('toS').onclick=()=>$('s1').scrollIntoView({behavior:'smooth'});
 /* mode (shared by both screens) */
 function setMode(ed){
   EDIT=ed;stopAll();tsStopAll();hide();$('tsg').classList.toggle('edit',EDIT);
@@ -673,28 +682,52 @@ function mpStep(){
   if(!MPH||TH.busy)return;const v=TH.vid;if(!v||v.readyState<2)return;
   TH.busy=true;MPH.send({image:v}).catch(()=>{}).then(()=>{TH.busy=false});
 }
-/* --- camera: 画面に入ると自動で起動 --- */
+/* --- camera: テルミン / テルミン式サンプラーの表示中だけ自動ON、それ以外は停止（録画なし・映像は端末内で処理のみ） --- */
+const camWanted=()=>TH.armed&&(thVis||tsVis)&&!document.hidden;
+async function camPerm(){try{return await navigator.permissions.query({name:'camera'})}catch(e){return null}}
 async function startCam(){
   if(TH.cam==='on'||TH.cam==='load')return;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){TH.cam='none';thOv();return}
   TH.cam='load';thOv();
+  const pm=await camPerm();
+  if(pm&&pm.state==='denied'){TH.cam='denied';thOv();return}      /* 拒否済みなら無駄に再要求しない */
   let st;
   try{st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false})}
-  catch(e){TH.cam=(e&&(e.name==='NotFoundError'||e.name==='OverconstrainedError'||e.name==='NotReadableError'))?'none':'denied';thOv();return}
+  catch(e){
+    const n=e&&e.name;
+    TH.cam=(n==='NotFoundError'||n==='OverconstrainedError')?'none':(n==='NotReadableError'||n==='AbortError')?'busy':'denied';
+    thOv();return;
+  }
+  if(!camWanted()&&!TH.manualStart){st.getTracks().forEach(t=>t.stop());TH.cam='idle';thOv();return}   /* 許可待ちの間に画面を離れた */
   TH.stream=st;TH.vid.srcObject=st;
-  try{await TH.vid.play();await initMP();TH.cam='on'}
-  catch(e){camStop();TH.cam='fail'}
-  thOv();
+  try{await TH.vid.play();await initMP()}
+  catch(e){camStop();TH.cam='fail';thOv();return}
+  if(TH.stream!==st){return}                                       /* 準備中に停止された */
+  TH.cam='on';thOv();
 }
 function camStop(){if(TH.stream){TH.stream.getTracks().forEach(t=>t.stop());TH.stream=null}TH.vid.srcObject=null;TH.hr=null;TH.hand=false;TH.busy=false}
-const OVM={idle:['カメラを起動しています…'],load:['カメラと手の認識モデルを準備しています…'],off:['カメラはオフです','📷 カメラをオンにする'],denied:['カメラが許可されていません。ブラウザの設定で許可してから、もう一度お試しください。','📷 もう一度許可する'],none:['この端末ではカメラを使えません。'],fail:['手の認識モデルを読み込めませんでした。ネットワークを確認してください。','🔄 再試行']};
+const OVM={idle:['カメラを準備しています…'],load:['カメラと手の認識モデルを準備しています…'],off:['カメラはオフです','カメラをオンにする'],denied:['カメラが許可されていません。許可ダイアログで「許可」を選ぶか、ブラウザ／端末の設定でカメラを許可してください。設定を変えると自動で再開します。','もう一度許可を求める'],busy:['カメラを使用できません。他のアプリが使用中の可能性があります。','再試行'],none:['この端末ではカメラを使えません。'],fail:['手の認識モデルを読み込めませんでした。ネットワークを確認してください。','再試行']};
 function thOv(){
   const m=OVM[TH.cam];
   $('thov').style.display=TH.cam==='on'?'none':'flex';
   if(m){$('thmsg').textContent=m[0];const b=$('ovCam');b.style.display=m[1]?'':'none';if(m[1])b.textContent=m[1]}
   syncTH();tsOv(m);
 }
-function thAuto(){if(TH.armed&&(thVis||tsVis)&&!TH.manualOff&&(TH.cam==='idle'||TH.cam==='fail'))startCam()}
+/* 画面の表示状態に合わせてカメラをON/OFF */
+function thAuto(){
+  if(!(thVis||tsVis)){TH.manualOff=false;if(TH.cam==='off'){TH.cam='idle';thOv()}}
+  if(camWanted()){
+    if(!TH.manualOff&&(TH.cam==='idle'||TH.cam==='fail'))startCam();
+  }else if(TH.cam==='on'||TH.cam==='load'||TH.cam==='fail'||TH.cam==='busy'){
+    camStop();TH.cam='idle';thOv();
+  }
+}
+document.addEventListener('visibilitychange',thAuto);
+/* 設定でカメラ許可が変わったら、再起動なしで自動反映 */
+camPerm().then(p=>{if(!p)return;TH.pm=p;p.onchange=()=>{
+  if(p.state==='granted'&&(TH.cam==='denied'||TH.cam==='busy')){TH.cam='idle';thAuto()}
+  else if(p.state==='denied'&&TH.cam!=='denied'){camStop();TH.cam='denied';thOv()}
+}});
 /* --- per-frame control: hand present → sound, hand lost → mute --- */
 function thFrame(){
   const now=performance.now(),act=(thVis||tsVis)&&!document.hidden&&TH.cam==='on';
@@ -713,7 +746,7 @@ function thFrame(){
   if(TH.v)thUpdate();
   if(tsVis)tsStep();
   if(!thVis)return;
-  const st=TH.cam!=='on'?'':TH.hand?'✋ 手を検出中':'手をカメラにかざしてください';
+  const st=TH.cam!=='on'?'':TH.hand?'● 手を検出中':'手をカメラにかざしてください';
   if(st!==TH.st){TH.st=st;$('thst').textContent=st}
   thDraw();if(EDIT&&++thm%3===0)thMeters();
 }
@@ -722,6 +755,50 @@ function thMeters(){
   setM('H2',TH.h*100,Math.round(TH.h*100)+'%');
   setM('Z2',TH.hand?TH.vol*100:0,TH.hand?Math.round(TH.vol*100)+'%':'—');
   setM('V2',Math.cbrt(TH.vc/1200)*100,'±'+fmtC(TH.vc));
+}
+/* --- 倍音(X軸)に連動するモノトーンのエフェクト：倍音が増えるほど波形の重なり・光・波紋・粒子が増える --- */
+const PTS={xy:[],th:[]};
+function waveFx(g,b,s,n,W,py,amp,h,ph){
+  const p=new Path2D();
+  for(let i=0;i<n;i++){const x=i/(n-1)*W,y=py-b[s+i]*amp;i?p.lineTo(x,y):p.moveTo(x,y)}
+  g.strokeStyle=COL.ac;g.lineCap='round';g.lineJoin='round';
+  const L=1+Math.round(h*3);
+  for(let k=L-1;k>=0;k--){g.globalAlpha=k?(.1+.1*h)/k:.95;g.lineWidth=2+k*(2.5+h*5);g.stroke(p)}
+  if(h>.3){g.save();g.translate(0,Math.sin(ph*1.3)*7*h);g.globalAlpha=.28*h;g.lineWidth=1;g.stroke(p);g.restore()}
+}
+function satFx(g,px,py,R,h,ph){
+  const n=Math.round(h*10);
+  for(let i=0;i<n;i++){
+    const o=i%2,a=ph*(o?-.5:.4)+i*Math.PI*2/n,r=R+14+o*12;
+    g.beginPath();g.arc(px+Math.cos(a)*r,py+Math.sin(a)*r,o?2:3,0,7);g.fill();
+  }
+}
+function harmFx(g,o){
+  const{px,py,h,lvl,on,ph,pts,R}=o;
+  g.save();g.globalAlpha=1;
+  if(on&&h>.02){
+    const gr=g.createRadialGradient(px,py,0,px,py,R+30+h*150*lvl);
+    gr.addColorStop(0,rgba(COL.ac,.06+.30*h));gr.addColorStop(1,rgba(COL.ac,0));
+    g.fillStyle=gr;g.beginPath();g.arc(px,py,R+30+h*150*lvl,0,7);g.fill();
+    const nr=1+Math.round(h*6);
+    for(let i=0;i<nr;i++){
+      const f=((ph*.09+i/nr)%1);
+      g.strokeStyle=COL.ac;g.globalAlpha=(1-f)*(.08+.5*h);g.lineWidth=1+(1-f)*(1+h*3);
+      g.beginPath();g.arc(px,py,R+8+f*(36+h*130*lvl),0,7);g.stroke();
+    }
+    const add=Math.round(h*h*5+h*1.5);
+    for(let i=0;i<add&&pts.length<170;i++){
+      const a=Math.random()*Math.PI*2,sp=(.6+Math.random()*2.6)*(.35+h);
+      pts.push({x:px+Math.cos(a)*R,y:py+Math.sin(a)*R,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,l:1});
+    }
+  }
+  g.fillStyle=COL.ac;
+  for(let i=pts.length-1;i>=0;i--){
+    const q=pts[i];q.x+=q.vx;q.y+=q.vy;q.vx*=.985;q.vy*=.985;q.l-=.022;
+    if(q.l<=0){pts.splice(i,1);continue}
+    g.globalAlpha=q.l*.85;g.beginPath();g.arc(q.x,q.y,.8+q.l*2.2,0,7);g.fill();
+  }
+  g.restore();
 }
 /* --- visualizer (monochrome) --- */
 function thDraw(){
@@ -732,8 +809,7 @@ function thDraw(){
   const on=!!TH.v,span=c.span*12,px=TH.x*W,vol=on?TH.vol:0;
   ph2+=(4.5+XY.m*3)*Math.PI*2/60;
   if(TH.cam==='on'&&TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.16;g.drawImage(TH.vid,0,0,W,H);g.restore()}
-  const gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,rgba(COL.ac,.2*c.hmax));gr.addColorStop(1,rgba(COL.ac,0));g.fillStyle=gr;g.fillRect(0,0,W,H);
-  g.font='600 10px '+FONT;g.textBaseline='alphabetic';g.textAlign='left';
+    g.font='600 10px '+FONT;g.textBaseline='alphabetic';g.textAlign='left';
   for(let m=Math.ceil(c.lo);m<=c.lo+span;m++){
     const y=(m-c.lo)/span*H,C=m%12===0;
     g.strokeStyle=COL.line;g.globalAlpha=C?1:.5;g.lineWidth=C?1.5:1;g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke();
@@ -747,12 +823,13 @@ function thDraw(){
   const py=TH.y*H,wob=on?Math.sin(ph2)*Math.min(40,TH.vc/100*H/span):0,py2=py+wob;
   g.strokeStyle=COL.ac;g.globalAlpha=on?.3:.12;g.lineWidth=1;g.setLineDash([4,5]);
   g.beginPath();g.moveTo(px,0);g.lineTo(px,H);g.moveTo(0,py);g.lineTo(W,py);g.stroke();g.setLineDash([]);
+  harmFx(g,{px,py:py2,h:on?TH.h:0,lvl:Math.max(.3,vol),on,ph:ph2,pts:PTS.th,R:18+vol*34});
   if(on&&an){
     if(!tbuf||tbuf.length!==an.fftSize)tbuf=new Float32Array(an.fftSize);
     an.getFloatTimeDomainData(tbuf);
     let s=0;for(let i=1;i<tbuf.length/2;i++){if(tbuf[i-1]<0&&tbuf[i]>=0){s=i;break}}
     const N=Math.min(tbuf.length-s-1,Math.round(ctx.sampleRate/TH.f*2.5));
-    if(N>8){g.globalAlpha=.9;g.lineWidth=2;g.beginPath();for(let i=0;i<N;i++){const x=i/(N-1)*W,y=py2-tbuf[s+i]*260;i?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()}
+    if(N>8)waveFx(g,tbuf,s,N,W,py2,260,TH.h,ph2);
   }
   if(TH.cam==='on'&&TH.hr){
     const L=TH.hr.lm;g.globalAlpha=.4;g.strokeStyle=COL.ac;g.lineWidth=1.5;g.lineCap='round';
@@ -762,8 +839,7 @@ function thDraw(){
   const R=18+vol*34+(on?3*Math.sin(ph2*2):0);
   g.globalAlpha=on?1:.4;g.fillStyle=rgba(COL.ac,.18);g.strokeStyle=COL.ac;g.lineWidth=2;g.beginPath();g.arc(px,py2,R,0,7);g.fill();g.stroke();
   g.fillStyle=COL.ac;g.beginPath();g.arc(px,py2,4,0,7);g.fill();
-  const sat=Math.round(TH.h*6);
-  for(let i=0;i<sat;i++){const a=ph2*.35+i*Math.PI*2/sat;g.beginPath();g.arc(px+Math.cos(a)*(R+14),py2+Math.sin(a)*(R+14),3,0,7);g.fill()}
+  satFx(g,px,py2,R,TH.h,ph2);
   g.globalAlpha=1;g.textAlign='left';
   if(on){
     g.fillStyle=COL.ink;g.font='700 28px '+FONT;g.fillText(nn(TH.midi),14,40);
@@ -772,10 +848,10 @@ function thDraw(){
   }
 }
 /* --- UI wiring --- */
-$('ovCam').onclick=()=>{TH.manualOff=false;if(TH.cam!=='load'&&TH.cam!=='on'){TH.cam='idle';startCam()}};
+$('ovCam').onclick=()=>{TH.manualOff=false;if(TH.cam!=='load'&&TH.cam!=='on'){TH.cam='idle';TH.manualStart=true;startCam().then(()=>{TH.manualStart=false})}};
 $('camb').onclick=()=>{
   if(TH.cam==='on'){TH.manualOff=true;camStop();TH.cam='off';thOv()}
-  else{TH.manualOff=false;TH.cam='idle';startCam()}
+  else{TH.manualOff=false;TH.cam='idle';TH.manualStart=true;startCam().then(()=>{TH.manualStart=false})}
 };
 $('sens2').onclick=reqMotion;
 function syncTH(){
@@ -789,10 +865,8 @@ function syncTH(){
 let tt;
 function thSave(){syncTH();clearTimeout(tt);tt=setTimeout(()=>dbPut('__th__',thSer()).catch(()=>{}),500)}
 [['cS2','span'],['cL2','lo'],['cH2','hmax'],['cD2','vol'],['cV2','vib'],['cW2','vw'],['cM2','mv']].forEach(a=>$(a[0]).oninput=e=>{TH.cfg[a[1]]=+e.target.value;thSave()});
-try{new IntersectionObserver(es=>{thVis=es[es.length-1].isIntersecting;if(TH.stream)TH.stream.getTracks().forEach(t=>t.enabled=(thVis||tsVis));thAuto()},{threshold:.3}).observe($('s0'))}catch(e){thVis=true}
-setTimeout(()=>{TH.armed=true;thAuto()},900);
-$('toTH').onclick=()=>$('s0').scrollIntoView({behavior:'smooth'});
-$('toS3').onclick=()=>$('s1').scrollIntoView({behavior:'smooth'});
+try{new IntersectionObserver(es=>{thVis=es[es.length-1].isIntersecting;thAuto()},{threshold:.3}).observe($('s0'))}catch(e){thVis=true}
+setTimeout(()=>{TH.armed=true;thAuto()},400);
 syncTH();thOv();
 /* 起動時はサンプラー画面（中央）を表示 */
 const goS1=()=>{const v=$('v');v.scrollTop=$('s1').getBoundingClientRect().top-v.getBoundingClientRect().top+v.scrollTop};
@@ -842,7 +916,8 @@ function pgUI(){
   document.querySelectorAll('.pgbar').forEach(b=>{
     const k=b.dataset.k;
     b.querySelector('.pn').textContent='♪ '+(PG[k].name||'無題のプリセット');
-    b.querySelector('.pc2 span').textContent=(pgI(k)+1)+' / '+pgN(k);
+    b.querySelector('.pgt').textContent=(pgI(k)+1)+' / '+pgN(k);
+    b.querySelector('.pgd').innerHTML=Array.from({length:pgN(k)},(_,i)=>'<i class="dot'+(i===pgI(k)?' a':'')+'"></i>').join('');
   });
 }
 function pgSet(m,i){
@@ -869,7 +944,7 @@ function pgDel(m){
 document.querySelectorAll('.pgbar').forEach(bar=>bar.addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;
   const k=bar.dataset.k,a=b.dataset.a;
-  if(a==='pre')openPreset(k);else if(a==='prev')pgSet(k,pgI(k)-1);else if(a==='next')pgSet(k,pgI(k)+1);else if(a==='add')pgAdd(k);
+  if(a==='pre')openPreset(k);else if(a==='add')pgAdd(k);
 }));
 $('addPg').onclick=()=>pgAdd('sampler');
 /* ---- プリセット（モードごと） ---- */
@@ -1036,16 +1111,8 @@ function tsOv(m){
 }
 $('tsCam').onclick=()=>$('ovCam').onclick();
 $('tsMute').onclick=()=>{tsStopAll();toast('全てミュートしました')};
-try{new IntersectionObserver(es=>{tsVis=es[es.length-1].isIntersecting;if(TH.stream)TH.stream.getTracks().forEach(t=>t.enabled=(thVis||tsVis));thAuto();if(!tsVis)tsLeave()},{threshold:.3}).observe($('sts'))}catch(e){tsVis=true}
+try{new IntersectionObserver(es=>{tsVis=es[es.length-1].isIntersecting;thAuto();if(!tsVis)tsLeave()},{threshold:.3}).observe($('sts'))}catch(e){tsVis=true}
 try{new IntersectionObserver(es=>{if(es[es.length-1].isIntersecting){$('lsi').value=LSn;lsUI();listLS()}},{threshold:.3}).observe($('s3'))}catch(e){}
-/* ---- 縦スクロールの画面ナビ（右端のドット） ---- */
-const SCR=['sts','s0','s1','s2','s3'];
-$('nv').innerHTML=SCR.map((id,i)=>'<button data-i="'+i+'" aria-label="画面'+(i+1)+'"></button>').join('');
-$('nv').onclick=e=>{const b=e.target.closest('button');if(b)$(SCR[+b.dataset.i]).scrollIntoView({behavior:'smooth'})};
-function navUp(){const v=$('v'),i=Math.round(v.scrollTop/(v.clientHeight||1));[...$('nv').children].forEach((b,j)=>b.classList.toggle('a',j===i))}
-$('v').addEventListener('scroll',navUp,{passive:true});addEventListener('load',navUp);setTimeout(navUp,300);
-$('toTH2').onclick=()=>$('s0').scrollIntoView({behavior:'smooth'});
-$('toXY2').onclick=()=>$('s2').scrollIntoView({behavior:'smooth'});
 document.querySelectorAll('.sensb').forEach(b=>b.onclick=reqMotion);
 /* ---- 起動時の復元 ---- */
 dbGet('__xy__').then(c=>{if(c)setXYState(c.pages?c:{pages:[c]})}).catch(()=>{});
@@ -1054,11 +1121,71 @@ dbGet('__ts__').then(c=>{if(c)tsSetState(c)}).catch(()=>{});
 dbGet('__ls__').then(n=>{LSn=n||'';lsUI()}).catch(()=>{});
 tsRender();pgUI();lsUI();
 
-/* ---------- 許可の自動化 ----------
-   ・カメラ：テルミン画面が表示されると自動で起動（許可ダイアログもその時に表示）
-   ・モーションセンサー：最初の1タップで自動リクエスト（iOSのみダイアログあり／Androidは自動で有効） */
-let sensAsked=false;
-addEventListener('click',()=>{if(sensAsked)return;sensAsked=true;reqMotion();thAuto()},true);
+/* ---------- 機能切り替えボタン：長押し→ドラッグして離すとその画面へジャンプ（タップでも開閉） ---------- */
+const FN=[['sts','テルミン式サンプラー'],['s0','テルミン'],['s1','サンプラー'],['s2','XYパッド'],['s3','ライブセット管理']];
+let fnOpen=false,fnHold=false,fnTimer=0,fnHv=null,fnT0=0;
+const fnCur=()=>{const v=$('v');return FN[clamp(Math.round(v.scrollTop/(v.clientHeight||1)),0,FN.length-1)][0]};
+function fnShow(btn){
+  const cur=fnCur(),l=$('fnl');
+  l.innerHTML=FN.map(f=>'<div class="fni'+(f[0]===cur?' cur':'')+'" data-s="'+f[0]+'">'+f[1]+'</div>').join('');
+  const r=btn.getBoundingClientRect();
+  l.style.left=Math.max(10,Math.min(innerWidth-234,r.left))+'px';l.style.bottom=(innerHeight-r.top+10)+'px';
+  $('fnp').classList.add('show');fnOpen=true;fnHv=null;fnT0=performance.now();
+}
+function fnHide(){$('fnp').classList.remove('show');fnOpen=false;fnHv=null}
+function fnGo(id){fnHide();$(id).scrollIntoView({behavior:'smooth'})}
+function fnHover(x,y){
+  const e=document.elementFromPoint(x,y),it=e&&e.closest?e.closest('.fni'):null;
+  document.querySelectorAll('.fni').forEach(n=>n.classList.toggle('hv',n===it));
+  fnHv=it?it.dataset.s:null;
+}
+document.querySelectorAll('.fnb').forEach(b=>{
+  b.addEventListener('pointerdown',e=>{
+    e.preventDefault();try{b.setPointerCapture(e.pointerId)}catch(_){}
+    if(fnOpen){return}
+    fnHold=false;clearTimeout(fnTimer);
+    fnTimer=setTimeout(()=>{fnHold=true;fnShow(b);if(navigator.vibrate)navigator.vibrate(12)},320);
+  });
+  b.addEventListener('pointermove',e=>{if(fnHold)fnHover(e.clientX,e.clientY)});
+  b.addEventListener('pointerup',e=>{
+    clearTimeout(fnTimer);
+    if(fnHold){fnHold=false;const id=fnHv;if(id)fnGo(id);else fnHide();return}
+    if(fnOpen)fnHide();else fnShow(b);                    /* 短いタップ：メニューを開いて、項目をタップで移動 */
+  });
+  b.addEventListener('pointercancel',()=>{clearTimeout(fnTimer);if(fnHold){fnHold=false;fnHide()}});
+  b.addEventListener('contextmenu',e=>e.preventDefault());
+});
+$('fnp').addEventListener('click',e=>{
+  if(performance.now()-fnT0<250)return;
+  const it=e.target.closest('.fni');if(it)fnGo(it.dataset.s);else fnHide();
+});
+
+/* ---------- 横スワイプでページ移動（XY / テルミン / テルミン式サンプラー） ---------- */
+let lastSwipe=0;
+function swipeArea(secId,mode,stageId,skip){
+  const el=$(secId);let sx=0,sy=0,t0=0,pid=null;
+  el.addEventListener('pointerdown',e=>{
+    if(pid!==null||e.target.closest('input,.fnb,'+skip))return;
+    pid=e.pointerId;sx=e.clientX;sy=e.clientY;t0=performance.now();
+  });
+  const end=e=>{
+    if(e.pointerId!==pid)return;pid=null;
+    if(e.type==='pointercancel')return;
+    const dx=e.clientX-sx,dy=e.clientY-sy;
+    if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.6||performance.now()-t0>900)return;
+    const dir=dx<0?1:-1,i=pgI(mode),n=pgN(mode);
+    if(i+dir<0||i+dir>=n)return;
+    lastSwipe=performance.now();
+    pgSet(mode,i+dir);
+    const st=$(stageId);st.classList.remove('pgL','pgR');void st.offsetWidth;st.classList.add(dir>0?'pgL':'pgR');
+    setTimeout(()=>st.classList.remove('pgL','pgR'),260);
+  };
+  el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
+  el.addEventListener('click',e=>{if(performance.now()-lastSwipe<350){e.stopPropagation();e.preventDefault()}},true);
+}
+swipeArea('sts','ts','tsw','.sheet');
+swipeArea('s0','th','th','.sheet');
+swipeArea('s2','xy','xy','#xy');   /* XYパッド上はタッチ演奏のため対象外：ページ表示バーや下のパネルでスワイプ */
 
 /* ---------- Init ---------- */
 
