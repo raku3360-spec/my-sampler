@@ -1,10 +1,17 @@
 // オフラインでも起動できるよう、アプリ本体と MediaPipe のファイルをキャッシュします。
 // index.html を更新したら VERSION を上げてください。
+// build: theremin-sampler + livesets（内容を変えて更新を検知させるための印）
 const VERSION = 'sampler-v7';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
+  // HTTPキャッシュを避けて最新ファイルを取得
+  e.waitUntil(
+    caches.open(VERSION)
+      .then(c => Promise.all(FILES.map(u =>
+        fetch(new Request(u, { cache: 'reload' })).then(r => (r.ok ? c.put(u, r) : null)).catch(() => null))))
+      .then(() => self.skipWaiting())
+  );
 });
 self.addEventListener('activate', e => {
   e.waitUntil(
@@ -16,7 +23,7 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  // MediaPipe（CDN）は初回取得時にキャッシュ → 2回目以降はオフラインでも動作
+  // MediaPipe（CDN）：初回取得時にキャッシュ → 2回目以降はオフラインでも動作
   if (url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/@mediapipe/')) {
     e.respondWith(
       caches.match(req).then(hit => hit || fetch(req).then(res => {
@@ -29,7 +36,14 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
+  // アプリ本体：ネット優先（常に最新）→ オフライン時はキャッシュ
   e.respondWith(
-    caches.match(req, { ignoreSearch: true }).then(hit => hit || fetch(req).catch(() => caches.match('./index.html')))
+    fetch(req).then(res => {
+      if (res && res.ok && url.origin === location.origin) {
+        const copy = res.clone();
+        caches.open(VERSION).then(c => c.put(req, copy));
+      }
+      return res;
+    }).catch(() => caches.match(req, { ignoreSearch: true }).then(hit => hit || caches.match('./index.html')))
   );
 });

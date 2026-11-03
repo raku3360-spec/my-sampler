@@ -107,11 +107,45 @@ body:not(.ed) .xed{display:none}
 .sc.edit .pad{border:1.5px dashed #5c5c61}
 .sc.edit .pad:active{background:var(--act)}
 #thov small{display:none}
+.pgbar{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px 0}
+.pgbar .pn{flex:1;min-width:0;text-align:left;font-weight:700;font-size:14px;padding:8px 12px;background:var(--card);border-radius:12px;box-shadow:var(--sh);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc2{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--sub)}
+.pc2 button{width:36px;height:36px;border-radius:10px;background:var(--card);box-shadow:var(--sh);font-size:16px}
+body:not(.ed) .pgbar .ed{display:none}
+#nv{position:fixed;right:1px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;z-index:5}
+#nv button{width:14px;height:20px;position:relative}
+#nv button::after{content:"";position:absolute;left:4px;top:7px;width:5px;height:5px;border-radius:3px;background:var(--line)}
+#nv button.a::after{background:var(--ac);height:11px;top:4px}
+#tsw{position:relative;width:100%;height:100%}
+#tsg{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:10px}
+#tsc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#tsg.edit .pad{border:1.5px dashed #5c5c61}
+#tsg.edit .pad:active{background:var(--act)}
+#tsov{position:absolute;inset:0;z-index:3;border-radius:18px;background:rgba(10,10,11,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;font-size:13px;color:var(--sub);line-height:1.7}
+#tsov p{margin:0}
+body.ed #tsov{display:none!important}
+.lsw{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:16px 16px 8px}
+.lsw h3{margin:0 0 8px;letter-spacing:.12em}
+.lsw .pi button:first-child{font-size:15px}
 </style>
 </head>
 <body>
 <div id="v">
+<section class="scr" id="sts">
+  <div class="pgbar" data-k="ts"><button class="pn ed" data-a="pre"></button><div class="pc2"><button data-a="prev">‹</button><span></span><button data-a="next">›</button><button class="ed" data-a="add">＋</button></div></div>
+  <div class="xyw"><div id="tsw"><div id="tsg"></div><canvas id="tsc"></canvas><div id="tsov"><p id="tsmsg"></p><button class="btn" id="tsCam" style="width:auto;padding:12px 22px"></button></div></div></div>
+  <div class="xed" id="xed3">
+    <div class="mt"><span>VOLUME</span><i><b id="mT1"></b></i><em id="vT1"></em></div>
+    <div class="mt"><span>SHAKE BOOST</span><i><b id="mT2"></b></i><em id="vT2"></em></div>
+    <div class="sub">手の位置のパッドが鳴ります。手が外れても止まらず、■で全ミュートします。</div>
+    <label>基本音量 <span id="lB"></span></label><input type="range" id="cB" min="0" max="1" step="0.01">
+    <label>距離→音量の感度 <span id="lDS"></span></label><input type="range" id="cDS" min="0" max="1" step="0.01">
+    <label>揺れ→音量の感度 <span id="lSK"></span></label><input type="range" id="cSK" min="0" max="1" step="0.01">
+  </div>
+  <div class="bar"><button class="ib" id="toTH2" aria-label="テルミンへ">◎</button><div class="mode" id="mode4"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="tsMute" aria-label="全ミュート">■</button><button class="ib sensb" id="sens3" aria-label="モーションセンサー">📳</button></div>
+</section>
 <section class="scr" id="s0">
+  <div class="pgbar" data-k="th"><button class="pn ed" data-a="pre"></button><div class="pc2"><button data-a="prev">‹</button><span></span><button data-a="next">›</button><button class="ed" data-a="add">＋</button></div></div>
   <div class="xyw"><div id="th"><canvas id="cv2"></canvas><video id="vid" playsinline muted autoplay></video><div id="thst"></div>
     <div id="thov"><h3>テルミン風 空間演奏</h3><p id="thmsg"></p><p>手のひらをカメラに向けて動かします。<br>上下＝ピッチ（下ほど高い） ／ 左＝倍音が増える ／ 近づく＝音が大きくなる<br>手が外れると自動でミュートされます。</p>
       <button class="btn" id="ovCam">📷 カメラを許可する</button></div></div></div>
@@ -143,6 +177,7 @@ body:not(.ed) .xed{display:none}
 <div class="bar"><button class="ib" id="toTH" aria-label="テルミンへ" style="font-size:18px">◎</button><button class="ib" id="toXY" aria-label="XYパッドへ" style="font-size:14px;font-weight:700">XY</button><div class="mode" id="mode"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="stopAll" aria-label="全停止">■</button></div>
 </section>
 <section class="scr" id="s2">
+  <div class="pgbar" data-k="xy"><button class="pn ed" data-a="pre"></button><div class="pc2"><button data-a="prev">‹</button><span></span><button data-a="next">›</button><button class="ed" data-a="add">＋</button></div></div>
   <div class="xyw"><div id="xy"><canvas id="cv"></canvas></div></div>
   <div class="xed" id="xed">
     <div class="mt"><span>PITCH</span><i><b id="mP"></b></i><em id="vP"></em></div>
@@ -161,8 +196,20 @@ body:not(.ed) .xed{display:none}
   </div>
   <div class="bar"><button class="ib" id="toS" aria-label="サンプラーへ">▦</button><div class="mode" id="mode2"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib sensb" id="sens" aria-label="モーションセンサー">📳</button></div>
 </section>
+<section class="scr" id="s3">
+  <div class="lsw">
+    <h3>LIVE SET</h3>
+    <div class="sub">サンプラー（全ページ・音声・設定）、XYパッド、テルミン、テルミン式サンプラーの全状態を、まとめて保存・呼び出しできます。</div>
+    <label>現在のライブセット <span id="lsn"></span></label>
+    <input type="text" id="lsi" placeholder="ライブセット名" maxlength="30">
+    <div class="row"><button class="btn" id="lsSave">この名前で保存</button><button class="btn g" id="lsNew">新規（初期化）</button></div>
+    <label>保存済み</label>
+    <div id="lsl"></div>
+  </div>
+  <div class="bar"><button class="ib" id="toXY2" aria-label="XYパッドへ" style="font-size:14px;font-weight:700">XY</button></div>
+</section>
 </div>
-
+<nav id="nv"></nav>
 
 <div id="ov">
   <section class="sheet" id="setS">
@@ -174,13 +221,15 @@ body:not(.ed) .xed{display:none}
     <div class="seg" id="sMode"><button data-v="hold">押している間</button><button data-v="full">最後まで再生</button></div>
     <label>再生タイプ</label>
     <div class="seg" id="sLoop"><button data-v="0">ワンショット</button><button data-v="1">ループ</button></div>
+    <label>発音方式</label>
+    <div class="seg" id="sPoly"><button data-v="0">モノ（単音）</button><button data-v="1">ポリ（重ねる）</button></div>
     <div class="sub" id="mh"></div>
     <label>音量 <span id="vv"></span></label>
     <input type="range" id="vol" min="0" max="1" step="0.01">
     <div class="row"><button class="btn g" id="test">試聴</button><button class="btn d" id="clr">削除</button><button class="btn g" id="cl1">閉じる</button></div>
   </section>
   <section class="sheet" id="preS">
-    <h3>プリセット</h3>
+    <h3 id="pT">プリセット</h3>
     <input type="text" id="pn" placeholder="プリセット名" maxlength="30">
     <div class="row"><button class="btn" id="psave">この名前で保存</button></div>
     <label>保存済み</label>
@@ -221,26 +270,28 @@ function unlock(e){
 ['pointerdown','touchstart','touchend','click','keydown'].forEach(t=>addEventListener(t,unlock,true));
 const decode=d=>new Promise((res,rej)=>{const p=ac().decodeAudioData(d.slice(0),res,rej);if(p&&p.catch)p.catch(rej)});
 function setOn(pad,v){if(pad.el)pad.el.classList.toggle('on',v)}
-function start(pad){
+function start(pad,bus){
   if(!pad.b)return;
-  ac();stop(pad);
+  ac();if(!pad.poly)stop(pad);
   const s=ctx.createBufferSource(),g=ctx.createGain();
   s.buffer=pad.b;s.loop=pad.loop;g.gain.value=pad.vol;
-  s.connect(g);g.connect(master);
-  s.onended=()=>{if(pad.a&&pad.a.s===s){pad.a=null;setOn(pad,false)}};
-  s.start();pad.a={s,g};setOn(pad,true);
+  s.connect(g);g.connect(bus||master);
+  const v={s,g};(pad.vs=pad.vs||[]).push(v);
+  s.onended=()=>{pad.vs=(pad.vs||[]).filter(x=>x!==v);if(!pad.vs.length)setOn(pad,false)};
+  s.start();setOn(pad,true);
 }
 function stop(pad){
-  if(!pad.a)return;
-  const{s,g}=pad.a;pad.a=null;setOn(pad,false);
-  try{g.gain.setTargetAtTime(0,ctx.currentTime,0.01);s.stop(ctx.currentTime+0.06)}catch(e){}
+  const vs=pad.vs;if(!vs||!vs.length)return;pad.vs=[];setOn(pad,false);
+  vs.forEach(v=>{try{v.g.gain.setTargetAtTime(0,ctx.currentTime,0.01);v.s.stop(ctx.currentTime+0.06)}catch(e){}});
 }
 function stopAll(){S.pages.forEach(pg=>pg.forEach(stop))}
 
 /* ---------- State ---------- */
-const blank=()=>({n:'',d:null,mode:'full',loop:false,vol:0.8,b:null,a:null,el:null});
+const blank=()=>({n:'',d:null,mode:'full',loop:false,poly:false,vol:0.8,b:null,vs:[],el:null});
+const serPad=p=>({n:p.n,d:p.d,mode:p.mode,loop:p.loop,vol:p.vol,poly:p.poly});
+const isOn=p=>!!(p.vs&&p.vs.length);
 const blankPage=()=>Array.from({length:N},blank);
-function serialize(){return{name:S.name,pages:S.pages.map(pg=>pg.map(p=>({n:p.n,d:p.d,mode:p.mode,loop:p.loop,vol:p.vol})))}}
+function serialize(){return{name:S.name,pages:S.pages.map(pg=>pg.map(serPad))}}
 async function load(o){
   stopAll();
   const pages=[];
@@ -256,14 +307,14 @@ async function load(o){
   S={name:o.name||'',pages:pages.length?pages:[blankPage()]};
   render();
 }
-let tm;const autosave=()=>{clearTimeout(tm);tm=setTimeout(()=>dbPut('__work__',serialize()).catch(()=>{}),500)};
+let tm;const autosave=()=>{clearTimeout(tm);tm=setTimeout(()=>{dbPut('__work__',serialize()).catch(()=>{});dbPut('__ts__',tsSer()).catch(()=>{})},500)};
 
 /* ---------- Render ---------- */
 function updPad(pad){
   const el=pad.el;if(!el)return;
   el.classList.toggle('has',!!pad.b);
   el.querySelector('.nm').textContent=pad.b?pad.n:'';
-  el.querySelector('.tg').textContent=pad.b?((pad.mode==='hold'?'HOLD':'FULL')+(pad.loop?' ∞ LOOP':' · ONE')):'';
+  el.querySelector('.tg').textContent=pad.b?((pad.mode==='hold'?'HOLD':'FULL')+(pad.loop?' ∞ LOOP':' · ONE')+(pad.poly?' · POLY':'')):'';
 }
 function render(){
   const sc=$('sc');sc.innerHTML='';
@@ -301,7 +352,7 @@ sc.addEventListener('pointerdown',e=>{
   if(!pad.b)return;
   el.classList.add('dn');held.set(e.pointerId,pad);pad.t0=performance.now();
   if(pad.mode==='hold')start(pad);
-  else if(pad.loop&&pad.a)stop(pad);
+  else if(pad.loop&&isOn(pad))stop(pad);
   else start(pad);
 });
 function release(e){
@@ -332,7 +383,7 @@ function syncSet(){
   [...$('sMode').children].forEach(b=>b.classList.toggle('on',b.dataset.v===p.mode));
   [...$('sLoop').children].forEach(b=>b.classList.toggle('on',(b.dataset.v==='1')===p.loop));
   $('mh').textContent=(p.mode==='hold'?'押している間だけ鳴り、離すと止まります。':'1回押すと最後まで再生します。')+(p.loop?(p.mode==='full'?' もう一度押すと停止します。':' 押している間くり返します。'):'');
-  $('vv').textContent=Math.round(p.vol*100)+'%';$('vol').value=p.vol;
+  $('vv').textContent=Math.round(p.vol*100)+'%';$('vol').value=p.vol;[...$('sPoly').children].forEach(b=>b.classList.toggle('on',(b.dataset.v==='1')===!!p.poly));
   updPad(p);autosave();
 }
 function openSet(pad,el){
@@ -353,59 +404,17 @@ $('fi').onchange=async e=>{
 };
 $('sMode').onclick=e=>{const b=e.target.closest('button');if(!b||!cur)return;cur.pad.mode=b.dataset.v;stop(cur.pad);syncSet()};
 $('sLoop').onclick=e=>{const b=e.target.closest('button');if(!b||!cur)return;cur.pad.loop=b.dataset.v==='1';stop(cur.pad);syncSet()};
+$('sPoly').onclick=e=>{const b=e.target.closest('button');if(!b||!cur)return;cur.pad.poly=b.dataset.v==='1';stop(cur.pad);syncSet()};
 $('vol').oninput=e=>{
   const p=cur.pad;p.vol=+e.target.value;$('vv').textContent=Math.round(p.vol*100)+'%';
-  if(p.a)p.a.g.gain.value=p.vol;autosave();
+  (p.vs||[]).forEach(v=>v.g.gain.value=p.vol);autosave();
 };
-$('test').onclick=()=>{const p=cur.pad;p.a?stop(p):start(p)};
+$('test').onclick=()=>{const p=cur.pad;isOn(p)?stop(p):start(p)};
 $('clr').onclick=()=>{
   const p=cur.pad;stop(p);p.d=null;p.b=null;p.n='';syncSet();
   updHint();
 };
 
-/* ---------- Presets / pages ---------- */
-async function listPresets(){
-  const box=$('pl');box.innerHTML='';
-  let keys=[];try{keys=(await dbKeys()).filter(k=>!k.startsWith('__'))}catch(e){}
-  if(!keys.length){box.innerHTML='<div class="sub">まだありません</div>';return}
-  keys.forEach(k=>{
-    const r=document.createElement('div');r.className='pi';
-    const a=document.createElement('button');a.textContent=k;
-    a.onclick=async()=>{const o=await dbGet(k);if(o){await load(o);$('pn').value=o.name;hide();toast('読み込みました')}};
-    const d=document.createElement('button');d.textContent='削除';
-    d.onclick=()=>twoTap(d,'本当に削除',async()=>{await dbDel(k);listPresets()});
-    r.append(a,d);box.append(r);
-  });
-}
-$('pb').onclick=()=>{$('pn').value=S.name;listPresets();show('preS')};
-$('psave').onclick=async()=>{
-  const name=$('pn').value.trim()||'無題';
-  S.name=name;
-  try{await dbPut(name,serialize());await dbPut('__work__',serialize());toast('「'+name+'」を保存しました')}
-  catch(e){toast('保存に失敗しました')}
-  render();listPresets();
-};
-$('pnew').onclick=()=>{stopAll();S={name:'',pages:[blankPage()]};$('pn').value='';render();autosave();hide()};
-/* confirm() は埋め込み環境で使えないため、2回タップで確定する方式 */
-function twoTap(btn,label,fn){
-  if(btn._arm){clearTimeout(btn._t);btn._arm=false;btn.textContent=btn._orig;fn();return}
-  btn._orig=btn.textContent;btn._arm=true;btn.textContent=label;
-  btn._t=setTimeout(()=>{btn._arm=false;btn.textContent=btn._orig},3000);
-}
-$('pdel').onclick=()=>{
-  if(S.pages.length<2){toast('最後のページは削除できません');return}
-  twoTap($('pdel'),'もう一度タップで削除',()=>{
-    const c=curPage();
-    S.pages[c].forEach(stop);S.pages.splice(c,1);render();
-    sc.scrollTo({left:Math.min(c,S.pages.length-1)*sc.clientWidth});dots();autosave();hide();
-    toast((c+1)+'ページ目を削除しました');
-  });
-};
-$('addPg').onclick=()=>{
-  if(S.pages.length>=MAXP){toast('ページは'+MAXP+'個までです');return}
-  S.pages.push(blankPage());render();
-  sc.scrollTo({left:sc.scrollWidth,behavior:'smooth'});autosave();
-};
 $('stopAll').onclick=stopAll;
 
 /* ---------- XY Synth ---------- */
@@ -506,7 +515,7 @@ function syncCfg(){
   document.querySelectorAll('#cSc .chip').forEach(b=>b.classList.toggle('on',b.dataset.s===c.scale));$('cSnap').classList.toggle('on',c.snap);
 }
 let xt;
-function cfgSave(){syncCfg();calc();xyUpdate();clearTimeout(xt);xt=setTimeout(()=>dbPut('__xy__',XY.cfg).catch(()=>{}),500)}
+function cfgSave(){syncCfg();calc();xyUpdate();clearTimeout(xt);xt=setTimeout(()=>dbPut('__xy__',xySer()).catch(()=>{}),500)}
 $('cH').oninput=e=>{XY.cfg.hmax=+e.target.value;cfgSave()};
 $('cV').oninput=e=>{XY.cfg.vib=+e.target.value;cfgSave()};
 $('cW').oninput=e=>{XY.cfg.vw=+e.target.value;cfgSave()};
@@ -593,19 +602,18 @@ $('toXY').onclick=()=>$('s2').scrollIntoView({behavior:'smooth'});
 $('toS').onclick=()=>$('s1').scrollIntoView({behavior:'smooth'});
 /* mode (shared by both screens) */
 function setMode(ed){
-  EDIT=ed;stopAll();hide();
+  EDIT=ed;stopAll();tsStopAll();hide();$('tsg').classList.toggle('edit',EDIT);
   sc.classList.toggle('edit',EDIT);document.body.classList.toggle('ed',EDIT);
   document.querySelectorAll('.mode button').forEach(x=>x.classList.toggle('on',(x.dataset.m==='edit')===EDIT));
-  updHint();if(EDIT){meters();thMeters()}
+  updHint();if(EDIT){meters();thMeters();tsMeters()}
 }
-['mode','mode2','mode3'].forEach(id=>$(id).onclick=e=>{const b=e.target.closest('button');if(b)setMode(b.dataset.m==='edit')});
+['mode','mode2','mode3','mode4'].forEach(id=>$(id).onclick=e=>{const b=e.target.closest('button');if(b)setMode(b.dataset.m==='edit')});
 calc();syncCfg();sensUI();refreshCol();meters();requestAnimationFrame(frame);
-dbGet('__xy__').then(c=>{if(c){Object.assign(XY.cfg,c);syncCfg();calc();meters()}}).catch(()=>{});
 if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission!=='function')listen();
 
 /* ---------- Theremin (MediaPipe Hands) ---------- */
 const TH={cfg:{lo:48,span:3,hmax:1,vib:.6,vw:.35,vol:.5,mv:.8},cam:'idle',manualOff:false,armed:false,hand:false,x:.5,y:.5,z:0,midi:60,f:261.6,h:0,vol:0,vc:0,v:null,seen:0,lostAt:0,vid:$('vid'),hr:null,busy:false,stream:null,st:''};
-let thVis=false,thm=0,ph2=0,tbuf=null;
+let thVis=false,tsVis=false,thm=0,ph2=0,tbuf=null;
 function ensureAn(){if(!an){an=ctx.createAnalyser();an.fftSize=2048;const z=ctx.createGain();z.gain.value=0;an.connect(z);z.connect(ctx.destination);SHP=new Float32Array(2048);for(let i=0;i<2048;i++)SHP[i]=Math.tanh(1.6*(i/1023.5-1))/Math.tanh(1.6)}}
 /* --- voice --- */
 function thCalc(){const c=TH.cfg;TH.midi=c.lo+c.span*12*TH.y;TH.f=440*Math.pow(2,(TH.midi-69)/12);TH.h=(1-TH.x)*c.hmax;TH.vol=Math.pow(TH.z,1.5);TH.vc=Math.min(1,XY.m*c.vib*2)*1200*Math.pow(c.vw,3)}
@@ -684,12 +692,12 @@ function thOv(){
   const m=OVM[TH.cam];
   $('thov').style.display=TH.cam==='on'?'none':'flex';
   if(m){$('thmsg').textContent=m[0];const b=$('ovCam');b.style.display=m[1]?'':'none';if(m[1])b.textContent=m[1]}
-  syncTH();
+  syncTH();tsOv(m);
 }
-function thAuto(){if(TH.armed&&thVis&&!TH.manualOff&&(TH.cam==='idle'||TH.cam==='fail'))startCam()}
+function thAuto(){if(TH.armed&&(thVis||tsVis)&&!TH.manualOff&&(TH.cam==='idle'||TH.cam==='fail'))startCam()}
 /* --- per-frame control: hand present → sound, hand lost → mute --- */
 function thFrame(){
-  const now=performance.now(),act=thVis&&!document.hidden&&TH.cam==='on';
+  const now=performance.now(),act=(thVis||tsVis)&&!document.hidden&&TH.cam==='on';
   let seen=false,x=0,y=0,z=0;
   if(act){mpStep();const r=TH.hr;if(r&&now-r.t<300){seen=true;x=r.x;y=r.y;z=r.z}}
   if(seen){
@@ -701,8 +709,9 @@ function thFrame(){
     if(now-TH.lostAt>(act?250:0)){TH.hand=false;TH.seen=0}
   }
   thCalc();
-  if(TH.hand&&!TH.v)thStart();else if(!TH.hand&&TH.v)thStop();
+  if(TH.hand&&thVis&&!TH.v)thStart();else if((!TH.hand||!thVis)&&TH.v)thStop();
   if(TH.v)thUpdate();
+  if(tsVis)tsStep();
   if(!thVis)return;
   const st=TH.cam!=='on'?'':TH.hand?'✋ 手を検出中':'手をカメラにかざしてください';
   if(st!==TH.st){TH.st=st;$('thst').textContent=st}
@@ -778,17 +787,272 @@ function syncTH(){
   $('camb').classList.toggle('on',TH.cam==='on');
 }
 let tt;
-function thSave(){syncTH();clearTimeout(tt);tt=setTimeout(()=>dbPut('__th__',TH.cfg).catch(()=>{}),500)}
+function thSave(){syncTH();clearTimeout(tt);tt=setTimeout(()=>dbPut('__th__',thSer()).catch(()=>{}),500)}
 [['cS2','span'],['cL2','lo'],['cH2','hmax'],['cD2','vol'],['cV2','vib'],['cW2','vw'],['cM2','mv']].forEach(a=>$(a[0]).oninput=e=>{TH.cfg[a[1]]=+e.target.value;thSave()});
-try{new IntersectionObserver(es=>{thVis=es[es.length-1].isIntersecting;if(TH.stream)TH.stream.getTracks().forEach(t=>t.enabled=thVis);thAuto()},{threshold:.3}).observe($('s0'))}catch(e){thVis=true}
+try{new IntersectionObserver(es=>{thVis=es[es.length-1].isIntersecting;if(TH.stream)TH.stream.getTracks().forEach(t=>t.enabled=(thVis||tsVis));thAuto()},{threshold:.3}).observe($('s0'))}catch(e){thVis=true}
 setTimeout(()=>{TH.armed=true;thAuto()},900);
 $('toTH').onclick=()=>$('s0').scrollIntoView({behavior:'smooth'});
 $('toS3').onclick=()=>$('s1').scrollIntoView({behavior:'smooth'});
 syncTH();thOv();
-dbGet('__th__').then(c=>{if(c){Object.assign(TH.cfg,c);syncTH()}}).catch(()=>{});
 /* 起動時はサンプラー画面（中央）を表示 */
 const goS1=()=>{const v=$('v');v.scrollTop=$('s1').getBoundingClientRect().top-v.getBoundingClientRect().top+v.scrollTop};
 goS1();addEventListener('load',goS1);
+
+/* ================= 共通：ページ / プリセット / ライブセット ================= */
+const MN={sampler:'サンプラー',xy:'XYパッド',th:'テルミン',ts:'テルミン式サンプラー'};
+const xyDef=()=>({lo:48,span:2,hmax:1,vib:.6,snap:false,key:-1,scale:'maj',vw:.35,mv:.8});
+const thDef=()=>({lo:48,span:3,hmax:1,vib:.6,vw:.35,vol:.5,mv:.8});
+const tsCfgDef=()=>({base:.8,dist:.8,shake:.5});
+const tsNew=()=>({pads:Array.from({length:N},blank),cfg:tsCfgDef()});
+const PG={xy:{pages:[XY.cfg],idx:0,name:''},th:{pages:[TH.cfg],idx:0,name:''},ts:{pages:[tsNew()],idx:0,name:''}};
+const xySer=()=>({name:PG.xy.name,idx:PG.xy.idx,pages:PG.xy.pages});
+const thSer=()=>({name:PG.th.name,idx:PG.th.idx,pages:PG.th.pages});
+const tsSer=()=>({name:PG.ts.name,idx:PG.ts.idx,pages:PG.ts.pages.map(p=>({cfg:p.cfg,pads:p.pads.map(serPad)}))});
+function setXYState(o){
+  xyStop();
+  const pages=((o&&o.pages)||[]).map(c=>Object.assign(xyDef(),c));if(!pages.length)pages.push(xyDef());
+  PG.xy={pages,idx:Math.min((o&&o.idx)||0,pages.length-1),name:(o&&o.name)||''};
+  XY.cfg=PG.xy.pages[PG.xy.idx];syncCfg();calc();meters();pgUI();
+}
+function setTHState(o){
+  const pages=((o&&o.pages)||[]).map(c=>Object.assign(thDef(),c));if(!pages.length)pages.push(thDef());
+  PG.th={pages,idx:Math.min((o&&o.idx)||0,pages.length-1),name:(o&&o.name)||''};
+  TH.cfg=PG.th.pages[PG.th.idx];syncTH();pgUI();
+}
+async function tsSetState(o){
+  tsStopAll();
+  const pages=[];
+  for(const pg of ((o&&o.pages)||[])){
+    const pads=[];
+    for(let i=0;i<N;i++){const pad=Object.assign(blank(),(pg.pads||[])[i]||{});pad.vs=[];pad.el=null;if(pad.d)pad.b=await decode(pad.d).catch(()=>null);pads.push(pad)}
+    pages.push({pads,cfg:Object.assign(tsCfgDef(),pg.cfg||{})});
+  }
+  if(!pages.length)pages.push(tsNew());
+  PG.ts={pages,idx:Math.min((o&&o.idx)||0,pages.length-1),name:(o&&o.name)||''};
+  tsRender();pgUI();
+}
+function saveMode(m){
+  if(m==='sampler'||m==='ts')autosave();
+  else dbPut(m==='xy'?'__xy__':'__th__',m==='xy'?xySer():thSer()).catch(()=>{});
+}
+/* ---- ページ ---- */
+const pgN=m=>m==='sampler'?S.pages.length:PG[m].pages.length;
+const pgI=m=>m==='sampler'?curPage():PG[m].idx;
+function pgUI(){
+  document.querySelectorAll('.pgbar').forEach(b=>{
+    const k=b.dataset.k;
+    b.querySelector('.pn').textContent='♪ '+(PG[k].name||'無題のプリセット');
+    b.querySelector('.pc2 span').textContent=(pgI(k)+1)+' / '+pgN(k);
+  });
+}
+function pgSet(m,i){
+  if(m==='sampler'){sc.scrollTo({left:i*sc.clientWidth,behavior:'smooth'});return}
+  const P=PG[m];i=clamp(i,0,P.pages.length-1);P.idx=i;
+  if(m==='xy'){xyStop();XY.cfg=P.pages[i];syncCfg();calc();meters()}
+  else if(m==='th'){TH.cfg=P.pages[i];syncTH()}
+  else{TSs.hov=-1;tsRender()}
+  pgUI();saveMode(m);
+}
+function pgAdd(m){
+  if(pgN(m)>=MAXP){toast('ページは'+MAXP+'個までです');return}
+  if(m==='sampler'){S.pages.push(blankPage());render();sc.scrollTo({left:sc.scrollWidth,behavior:'smooth'});autosave();return}
+  const P=PG[m];P.pages.push(m==='ts'?tsNew():JSON.parse(JSON.stringify(P.pages[P.idx])));
+  pgSet(m,P.pages.length-1);
+}
+function pgDel(m){
+  if(pgN(m)<2){toast('最後のページは削除できません');return false}
+  const c=pgI(m);
+  if(m==='sampler'){S.pages[c].forEach(stop);S.pages.splice(c,1);render();sc.scrollTo({left:Math.min(c,S.pages.length-1)*sc.clientWidth});dots();autosave()}
+  else{const P=PG[m];if(m==='ts')P.pages[c].pads.forEach(stop);P.pages.splice(c,1);pgSet(m,Math.min(c,P.pages.length-1))}
+  toast((c+1)+'ページ目を削除しました');return true;
+}
+document.querySelectorAll('.pgbar').forEach(bar=>bar.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const k=bar.dataset.k,a=b.dataset.a;
+  if(a==='pre')openPreset(k);else if(a==='prev')pgSet(k,pgI(k)-1);else if(a==='next')pgSet(k,pgI(k)+1);else if(a==='add')pgAdd(k);
+}));
+$('addPg').onclick=()=>pgAdd('sampler');
+/* ---- プリセット（モードごと） ---- */
+let PM='sampler';
+const pkey=(m,n)=>m==='sampler'?n:m+':'+n;
+const cleanName=n=>n.replace(/:/g,'：');
+const modeSer=m=>m==='sampler'?serialize():m==='xy'?xySer():m==='th'?thSer():tsSer();
+const modeName=m=>m==='sampler'?S.name:PG[m].name;
+function setModeName(m,n){if(m==='sampler'){S.name=n;render()}else PG[m].name=n;pgUI()}
+async function modeLoad(m,o){
+  if(m==='sampler')await load(o);else if(m==='xy')setXYState(o);else if(m==='th')setTHState(o);else await tsSetState(o);
+  pgUI();saveMode(m);
+}
+function modeReset(m){
+  if(m==='sampler'){stopAll();S={name:'',pages:[blankPage()]};render();autosave()}
+  else if(m==='xy'){setXYState({pages:[xyDef()]});saveMode('xy')}
+  else if(m==='th'){setTHState({pages:[thDef()]});saveMode('th')}
+  else{tsSetState({pages:[]}).then(()=>saveMode('ts'))}
+  pgUI();
+}
+function openPreset(m){PM=m;$('pT').textContent='プリセット（'+MN[m]+'）';$('pn').value=modeName(m);listPresets();show('preS')}
+async function listPresets(){
+  const box=$('pl');box.innerHTML='';
+  let keys=[];try{keys=(await dbKeys()).filter(k=>PM==='sampler'?(!k.startsWith('__')&&!k.includes(':')):k.startsWith(PM+':'))}catch(e){}
+  if(!keys.length){box.innerHTML='<div class="sub">まだありません</div>';return}
+  keys.forEach(k=>{
+    const disp=PM==='sampler'?k:k.slice(PM.length+1);
+    const r=document.createElement('div');r.className='pi';
+    const a=document.createElement('button');a.textContent=disp;
+    a.onclick=async()=>{const o=await dbGet(k);if(o){await modeLoad(PM,o);setModeName(PM,o.name||disp);$('pn').value=modeName(PM);hide();toast('読み込みました')}};
+    const d=document.createElement('button');d.textContent='削除';
+    d.onclick=()=>twoTap(d,'本当に削除',async()=>{await dbDel(k);listPresets()});
+    r.append(a,d);box.append(r);
+  });
+}
+$('pb').onclick=()=>openPreset('sampler');
+$('psave').onclick=async()=>{
+  const name=cleanName($('pn').value.trim()||'無題');
+  setModeName(PM,name);
+  try{await dbPut(pkey(PM,name),modeSer(PM));saveMode(PM);toast('「'+name+'」を保存しました')}
+  catch(e){toast('保存に失敗しました')}
+  listPresets();
+};
+$('pnew').onclick=()=>{modeReset(PM);$('pn').value='';hide()};
+/* confirm() は埋め込み環境で使えないため、2回タップで確定する方式 */
+function twoTap(btn,label,fn){
+  if(btn._arm){clearTimeout(btn._t);btn._arm=false;btn.textContent=btn._orig;fn();return}
+  btn._orig=btn.textContent;btn._arm=true;btn.textContent=label;
+  btn._t=setTimeout(()=>{btn._arm=false;btn.textContent=btn._orig},3000);
+}
+$('pdel').onclick=()=>{
+  if(pgN(PM)<2){toast('最後のページは削除できません');return}
+  twoTap($('pdel'),'もう一度タップで削除',()=>{if(pgDel(PM))hide()});
+};
+/* ---- ライブセット（アプリ全体の保存） ---- */
+let LSn='';
+const lsUI=()=>{$('lsn').textContent=LSn||'未保存'};
+const lsSer=()=>({ver:1,name:LSn,sampler:serialize(),xy:xySer(),th:thSer(),ts:tsSer()});
+async function lsLoad(o){
+  stopAll();tsStopAll();xyStop();
+  if(o.sampler)await load(o.sampler);
+  setXYState(o.xy);setTHState(o.th);await tsSetState(o.ts);
+  LSn=o.name||'';lsUI();pgUI();
+  autosave();saveMode('xy');saveMode('th');dbPut('__ls__',LSn).catch(()=>{});
+}
+async function listLS(){
+  const box=$('lsl');box.innerHTML='';
+  let keys=[];try{keys=(await dbKeys()).filter(k=>k.startsWith('ls:'))}catch(e){}
+  if(!keys.length){box.innerHTML='<div class="sub">まだありません</div>';return}
+  keys.forEach(k=>{
+    const disp=k.slice(3),r=document.createElement('div');r.className='pi';
+    const a=document.createElement('button');a.textContent=(disp===LSn?'● ':'')+disp;
+    a.onclick=async()=>{const o=await dbGet(k);if(o){await lsLoad(o);$('lsi').value=LSn;listLS();toast('「'+disp+'」を読み込みました')}};
+    const d=document.createElement('button');d.textContent='削除';
+    d.onclick=()=>twoTap(d,'本当に削除',async()=>{await dbDel(k);listLS()});
+    r.append(a,d);box.append(r);
+  });
+}
+$('lsSave').onclick=async()=>{
+  const name=cleanName($('lsi').value.trim()||'無題');
+  LSn=name;
+  try{await dbPut('ls:'+name,lsSer());dbPut('__ls__',LSn).catch(()=>{});toast('ライブセット「'+name+'」を保存しました')}catch(e){toast('保存に失敗しました')}
+  lsUI();listLS();
+};
+$('lsNew').onclick=()=>twoTap($('lsNew'),'もう一度タップで初期化',()=>{
+  stopAll();tsStopAll();
+  S={name:'',pages:[blankPage()]};render();setXYState({pages:[xyDef()]});setTHState({pages:[thDef()]});tsSetState({pages:[]});
+  LSn='';$('lsi').value='';lsUI();autosave();saveMode('xy');saveMode('th');dbPut('__ls__','').catch(()=>{});toast('初期化しました');
+});
+/* ================= テルミン式サンプラー ================= */
+const TSs={hov:-1,level:.8,zf:0,bst:1,bus:null};
+const curTS=()=>PG.ts.pages[PG.ts.idx];
+function tsStopAll(){PG.ts.pages.forEach(p=>p.pads.forEach(stop));TSs.hov=-1}
+function tsLeave(){const P=curTS(),old=P.pads[TSs.hov];if(old&&old.mode==='hold')stop(old);TSs.hov=-1;P.pads.forEach(p=>p.el&&p.el.classList.remove('dn'))}
+function tsRender(){
+  const g=$('tsg');g.innerHTML='';
+  curTS().pads.forEach((pad,i)=>{
+    const el=document.createElement('div');el.className='pad';el.dataset.p=PG.ts.idx;el.dataset.i=i;
+    el.innerHTML='<span class="num"></span><span class="nm"></span><span class="tg"></span>';
+    el.querySelector('.num').textContent=i+1;pad.el=el;g.append(el);updPad(pad);if(isOn(pad))setOn(pad,true);
+  });
+  g.classList.toggle('edit',EDIT);tsSync();
+}
+$('tsg').addEventListener('click',e=>{
+  if(!EDIT)return;const el=e.target.closest('.pad');if(!el)return;
+  openSet(curTS().pads[+el.dataset.i],el);
+});
+function tsSync(){
+  const c=curTS().cfg,pc=v=>Math.round(v*100)+'%';
+  $('cB').value=c.base;$('cDS').value=c.dist;$('cSK').value=c.shake;
+  $('lB').textContent=pc(c.base);$('lDS').textContent=pc(c.dist);$('lSK').textContent=pc(c.shake);
+}
+[['cB','base'],['cDS','dist'],['cSK','shake']].forEach(a=>$(a[0]).oninput=e=>{curTS().cfg[a[1]]=+e.target.value;tsSync();autosave()});
+function tsMeters(){
+  setM('T1',TSs.level/1.6*100,Math.round(TSs.level*100)+'%');
+  setM('T2',(TSs.bst-1)*50,'+'+Math.round((TSs.bst-1)*100)+'%');
+}
+/* 手の位置 → パッド判定 → 再生。手が外れてもミュートせず、■ボタンで全停止 */
+function tsStep(){
+  const P=curTS(),c=P.cfg;
+  if(ctx&&!TSs.bus){TSs.bus=ctx.createGain();TSs.bus.connect(master)}
+  if(TH.hand){
+    TSs.zf=(1-c.dist)+c.dist*Math.pow(TH.z,1.5);
+    TSs.bst=1+c.shake*XY.m*2;
+    TSs.level=Math.min(1.6,c.base*1.25*TSs.zf*TSs.bst);
+  }
+  if(TSs.bus)TSs.bus.gain.setTargetAtTime(TSs.level,ctx.currentTime,.04);
+  if(TH.hand&&!EDIT){
+    const r=$('tsw').getBoundingClientRect(),px=r.left+TH.x*r.width,py=r.top+TH.y*r.height;
+    let hv=-1;
+    for(let i=0;i<P.pads.length;i++){const el=P.pads[i].el;if(!el)continue;const q=el.getBoundingClientRect();if(px>=q.left&&px<=q.right&&py>=q.top&&py<=q.bottom){hv=i;break}}
+    if(hv>=0&&hv!==TSs.hov){
+      const old=P.pads[TSs.hov];if(old&&old.mode==='hold')stop(old);
+      TSs.hov=hv;const pad=P.pads[hv];
+      if(pad.b){ac();if(pad.mode==='full'&&pad.loop&&isOn(pad))stop(pad);else start(pad,TSs.bus)}
+    }
+  }else if(TSs.hov>=0)tsLeave();
+  P.pads.forEach((p,i)=>p.el&&p.el.classList.toggle('dn',i===TSs.hov));
+  tsDraw();
+  if(EDIT&&++thm%3===0)tsMeters();
+}
+function tsDraw(){
+  const cv=$('tsc'),g=cv.getContext('2d'),W=cv.clientWidth,H=cv.clientHeight,dpr=Math.min(2,devicePixelRatio||1);
+  if(!W||!H)return;
+  if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
+  g.setTransform(dpr,0,0,dpr,0,0);g.globalAlpha=1;g.clearRect(0,0,W,H);
+  if(TH.cam!=='on')return;
+  if(TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.1;g.drawImage(TH.vid,0,0,W,H);g.restore()}
+  if(TH.hr){
+    const L=TH.hr.lm;g.globalAlpha=.4;g.strokeStyle=COL.ac;g.lineWidth=1.5;g.lineCap='round';
+    HC.forEach(e=>{g.beginPath();g.moveTo((1-L[e[0]].x)*W,L[e[0]].y*H);g.lineTo((1-L[e[1]].x)*W,L[e[1]].y*H);g.stroke()});
+    g.fillStyle=COL.ac;L.forEach(p=>{g.beginPath();g.arc((1-p.x)*W,p.y*H,2,0,7);g.fill()});
+  }
+  if(TH.hand){
+    const px=TH.x*W,py=TH.y*H,R=14+Math.min(1,TSs.zf)*34;
+    g.globalAlpha=1;g.fillStyle=rgba(COL.ac,.16);g.strokeStyle=COL.ac;g.lineWidth=2;g.beginPath();g.arc(px,py,R,0,7);g.fill();g.stroke();
+    g.fillStyle=COL.ac;g.beginPath();g.arc(px,py,4,0,7);g.fill();
+    g.font='600 11px '+FONT;g.textAlign='right';g.fillStyle=COL.sub;g.fillText('VOL '+Math.round(TSs.level*100)+'%',W-10,H-8);
+  }
+}
+function tsOv(m){
+  $('tsov').style.display=TH.cam==='on'?'none':'flex';
+  if(m){$('tsmsg').textContent=m[0];const b=$('tsCam');b.style.display=m[1]?'':'none';if(m[1])b.textContent=m[1]}
+}
+$('tsCam').onclick=()=>$('ovCam').onclick();
+$('tsMute').onclick=()=>{tsStopAll();toast('全てミュートしました')};
+try{new IntersectionObserver(es=>{tsVis=es[es.length-1].isIntersecting;if(TH.stream)TH.stream.getTracks().forEach(t=>t.enabled=(thVis||tsVis));thAuto();if(!tsVis)tsLeave()},{threshold:.3}).observe($('sts'))}catch(e){tsVis=true}
+try{new IntersectionObserver(es=>{if(es[es.length-1].isIntersecting){$('lsi').value=LSn;lsUI();listLS()}},{threshold:.3}).observe($('s3'))}catch(e){}
+/* ---- 縦スクロールの画面ナビ（右端のドット） ---- */
+const SCR=['sts','s0','s1','s2','s3'];
+$('nv').innerHTML=SCR.map((id,i)=>'<button data-i="'+i+'" aria-label="画面'+(i+1)+'"></button>').join('');
+$('nv').onclick=e=>{const b=e.target.closest('button');if(b)$(SCR[+b.dataset.i]).scrollIntoView({behavior:'smooth'})};
+function navUp(){const v=$('v'),i=Math.round(v.scrollTop/(v.clientHeight||1));[...$('nv').children].forEach((b,j)=>b.classList.toggle('a',j===i))}
+$('v').addEventListener('scroll',navUp,{passive:true});addEventListener('load',navUp);setTimeout(navUp,300);
+$('toTH2').onclick=()=>$('s0').scrollIntoView({behavior:'smooth'});
+$('toXY2').onclick=()=>$('s2').scrollIntoView({behavior:'smooth'});
+document.querySelectorAll('.sensb').forEach(b=>b.onclick=reqMotion);
+/* ---- 起動時の復元 ---- */
+dbGet('__xy__').then(c=>{if(c)setXYState(c.pages?c:{pages:[c]})}).catch(()=>{});
+dbGet('__th__').then(c=>{if(c)setTHState(c.pages?c:{pages:[c]})}).catch(()=>{});
+dbGet('__ts__').then(c=>{if(c)tsSetState(c)}).catch(()=>{});
+dbGet('__ls__').then(n=>{LSn=n||'';lsUI()}).catch(()=>{});
+tsRender();pgUI();lsUI();
 
 /* ---------- 許可の自動化 ----------
    ・カメラ：テルミン画面が表示されると自動で起動（許可ダイアログもその時に表示）
