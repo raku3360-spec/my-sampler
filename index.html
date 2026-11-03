@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#f4f5f8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#14161b" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#0a0a0b">
+<meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Sampler">
 <meta name="application-name" content="Pocket Sampler">
 <meta name="format-detection" content="telephone=no">
@@ -17,10 +17,8 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>POCKET SAMPLER</title>
 <style>
-:root{--bg:#f4f5f8;--card:#fff;--ink:#1c1f26;--sub:#8a90a0;--ac:#3b6cff;--act:#e4ebff;--line:#e6e8ee;--sh:0 2px 8px rgba(30,40,70,.08),0 1px 2px rgba(30,40,70,.06);--dng:#e5484d;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161b;--card:#1f232b;--ink:#eef0f5;--sub:#8b92a3;--act:#26335e;--line:#2c313c;--sh:0 2px 8px rgba(0,0,0,.4);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#14161b;--card:#1f232b;--ink:#eef0f5;--sub:#8b92a3;--act:#26335e;--line:#2c313c;--sh:0 2px 8px rgba(0,0,0,.4);color-scheme:dark}
+:root{--bg:#0a0a0b;--card:#161617;--ink:#f4f4f5;--sub:#8c8c91;--ac:#ffffff;--on:#0a0a0b;--act:#2a2a2d;--line:#2a2a2d;--sh:0 0 0 1px #262629;--dng:#c4c4c8;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
 html,body{overscroll-behavior:none}
 html{height:100%;-webkit-touch-callout:none;-webkit-text-size-adjust:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -42,7 +40,7 @@ header{display:flex;align-items:center;gap:8px;padding:10px 14px 4px}
 .bar{display:flex;justify-content:center;padding:0 0 12px}
 .mode{display:flex;gap:4px;padding:4px;background:var(--card);border-radius:16px;box-shadow:var(--sh)}
 .mode button{padding:11px 26px;border-radius:12px;font-weight:700;font-size:14px;color:var(--sub)}
-.mode button.on{background:var(--ac);color:#fff}
+.mode button.on{background:var(--ac);color:var(--on)}
 body:not(.ed) header{display:none}
 #hint:empty{display:none}
 .pad{min-width:0;overflow:hidden}
@@ -55,13 +53,13 @@ body:not(.ed) header{display:none}
 .foot{display:flex;justify-content:center;align-items:center;gap:6px;padding:4px 0 10px;font-size:12px;color:var(--sub)}
 .dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
 .dot.a{background:var(--ac);width:18px;border-radius:4px}
-#ov{position:fixed;inset:0;background:rgba(10,15,30,.35);display:none;align-items:flex-end;z-index:9}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;align-items:flex-end;z-index:9}
 #ov.show{display:flex}
 .sheet{display:none;width:100%;max-height:85%;overflow-y:auto;background:var(--card);border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px))}
 .sheet.show{display:block}
 h3{margin:0 0 12px;font-size:17px}
 label{display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin:14px 0 6px;font-weight:600}
-.btn{width:100%;padding:12px;border-radius:12px;background:var(--ac);color:#fff;font-weight:700}
+.btn{width:100%;padding:12px;border-radius:12px;background:var(--ac);color:var(--on);font-weight:700}
 .btn.g{background:var(--bg);color:var(--ink)}
 .btn.d{background:var(--bg);color:var(--dng)}
 .sub{font-size:12px;color:var(--sub);margin-top:6px;word-break:break-all}
@@ -75,7 +73,7 @@ input[type=text]{width:100%;padding:12px;border-radius:12px;border:1px solid var
 .pi{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
 .pi button:first-child{flex:1;text-align:left;padding:10px 4px;font-weight:600}
 .pi button:last-child{color:var(--dng);padding:10px}
-#toast{position:fixed;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:#1c1f26;color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+#toast{position:fixed;left:50%;bottom:calc(60px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ac);color:var(--on);padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
 #toast.s{opacity:1}
 #v{flex:1;min-height:0;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain}
 #v::-webkit-scrollbar{display:none}
@@ -92,10 +90,9 @@ body:not(.ed) .xed{display:none}
 .mt em{width:92px;text-align:right;font-style:normal;color:var(--ink);font-variant-numeric:tabular-nums}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{padding:8px 11px;border-radius:10px;background:var(--bg);font-size:12px;font-weight:700;color:var(--sub)}
-.chip.on{background:var(--ac);color:#fff}
-.ib.on,.btn.on{background:var(--ac);color:#fff}
+.chip.on{background:var(--ac);color:var(--on)}
+.ib.on,.btn.on{background:var(--ac);color:var(--on)}
 #th{position:relative;width:100%;height:100%;background:var(--card);border-radius:22px;box-shadow:var(--sh);overflow:hidden;touch-action:pan-y}
-#th.m{touch-action:none}
 #cv2{position:absolute;inset:0;width:100%;height:100%}
 #vid{position:absolute;width:2px;height:2px;opacity:0;pointer-events:none}
 #thst{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:6px 14px;border-radius:20px;background:var(--act);color:var(--ac);font-size:12px;font-weight:700;white-space:nowrap;pointer-events:none}
@@ -105,21 +102,25 @@ body:not(.ed) .xed{display:none}
 #thov p{margin:0 0 6px;font-size:13px;line-height:1.7;color:var(--sub)}
 #thov .btn{max-width:300px}
 @media (max-width:380px){.mode button{padding:11px 16px}}
+.pad.dn,.pad.on{background:var(--ac);border-color:var(--ac);color:var(--on)}
+.pad.dn .num,.pad.on .num,.pad.dn .tg,.pad.on .tg{color:var(--on);opacity:.65}
+.sc.edit .pad{border:1.5px dashed #5c5c61}
+.sc.edit .pad:active{background:var(--act)}
+#thov small{display:none}
 </style>
 </head>
 <body>
 <div id="v">
 <section class="scr" id="s0">
   <div class="xyw"><div id="th"><canvas id="cv2"></canvas><video id="vid" playsinline muted autoplay></video><div id="thst"></div>
-    <div id="thov"><h3>テルミン風 空間演奏</h3><p>手のひらをカメラに向けて動かします。<br>上下＝ピッチ（下ほど高い） ／ 左＝倍音が増える ／ 近づく＝音が大きくなる<br>手が外れると自動でミュートされます。</p>
-      <button class="btn" id="ovCam">📷 カメラで演奏</button><button class="btn g" id="ovMouse">👆 タッチ / マウスで試す</button><button class="btn g" id="ovDemo">✨ デモ再生</button></div></div></div>
+    <div id="thov"><h3>テルミン風 空間演奏</h3><p id="thmsg"></p><p>手のひらをカメラに向けて動かします。<br>上下＝ピッチ（下ほど高い） ／ 左＝倍音が増える ／ 近づく＝音が大きくなる<br>手が外れると自動でミュートされます。</p>
+      <button class="btn" id="ovCam">📷 カメラを許可する</button></div></div></div>
   <div class="xed" id="xed2">
     <div class="mt"><span>PITCH</span><i><b id="mP2"></b></i><em id="vP2"></em></div>
     <div class="mt"><span>HARMONICS</span><i><b id="mH2"></b></i><em id="vH2"></em></div>
     <div class="mt"><span>VOLUME(Z)</span><i><b id="mZ2"></b></i><em id="vZ2"></em></div>
     <div class="mt"><span>VIBRATO</span><i><b id="mV2"></b></i><em id="vV2"></em></div>
     <div class="sub" id="sst2"></div>
-    <label>入力</label><div class="chips" id="cSrc"></div>
     <label>音域 <span id="lS2"></span></label><input type="range" id="cS2" min="1" max="4" step="1">
     <label>最低音 <span id="lL2"></span></label><input type="range" id="cL2" min="24" max="72" step="1">
     <label>倍音の最大量（Xが左端のとき） <span id="lH2"></span></label><input type="range" id="cH2" min="0" max="1" step="0.01">
@@ -127,9 +128,7 @@ body:not(.ed) .xed{display:none}
     <label>ビブラート感度 <span id="lV2"></span></label><input type="range" id="cV2" min="0" max="1" step="0.01">
     <label>ビブラート幅（最大1オクターブ） <span id="lW2"></span></label><input type="range" id="cW2" min="0" max="1" step="0.005">
     <label>音量 <span id="lM2"></span></label><input type="range" id="cM2" min="0" max="1" step="0.01">
-    <label>手の検出しきい値（簡易認識用） <span id="lT2"></span></label><input type="range" id="cT2" min="0.005" max="0.1" step="0.001">
-    <label>距離（タッチ/マウス用） <span id="lZ2"></span></label><input type="range" id="cZ2" min="0" max="1" step="0.01">
-    <div class="row"><button class="btn g" id="cCal">手の色を登録</button><button class="btn g" id="cCalR">色リセット</button><button class="btn g" id="cTest2">揺れテスト: OFF</button></div>
+    <div class="row"><button class="btn g" id="cTest2">揺れテスト: OFF</button></div>
   </div>
   <div class="bar"><button class="ib" id="toS3" aria-label="サンプラーへ">▦</button><div class="mode" id="mode3"><button data-m="play" class="on">▶ 演奏</button><button data-m="edit">✎ 編集</button></div><button class="ib" id="camb" aria-label="カメラ">📷</button><button class="ib sensb" id="sens2" aria-label="モーションセンサー">📳</button></div>
 </section>
@@ -211,7 +210,8 @@ function ac(){
 let silent;
 function silentWav(){const n=800,b=new DataView(new ArrayBuffer(44+n));const w=(o,s)=>[...s].forEach((c,i)=>b.setUint8(o+i,c.charCodeAt(0)));w(0,'RIFF');b.setUint32(4,36+n,true);w(8,'WAVEfmt ');b.setUint32(16,16,true);b.setUint16(20,1,true);b.setUint16(22,1,true);b.setUint32(24,8000,true);b.setUint32(28,8000,true);b.setUint16(32,1,true);b.setUint16(34,8,true);w(36,'data');b.setUint32(40,n,true);for(let i=0;i<n;i++)b.setUint8(44+i,128);return URL.createObjectURL(new Blob([b],{type:'audio/wav'}))}
 /* 最初のタップで AudioContext を確実に有効化（iOSのサイレントスイッチ対策も含む） */
-function unlock(){
+function unlock(e){
+  if(e&&(e.type==='click'||e.type==='touchend')&&XY.sens==='idle')reqMotion();
   if(ctx&&ctx.state==='running')return;
   try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
   ac();
@@ -462,14 +462,14 @@ xyEl.addEventListener('click',()=>reqMotion());
 xyEl.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('visibilitychange',()=>{if(document.hidden){XY.id=null;xyStop()}});
 /* motion sensor / mouse fallback */
-const SST={idle:'センサー：📳をタップして許可',wait:'センサー：接続中…',on:'センサー：有効（端末を動かすと揺れます）',denied:'センサー：許可されませんでした',none:'センサー信号なし（マウスを素早く動かすか、揺れテストで確認）'};
+const SST={idle:'センサー：画面を1回タップすると許可を求めます（📳でも可）',wait:'センサー：接続中…',on:'センサー：有効（端末を動かすと揺れます）',denied:'センサー：許可されませんでした',none:'センサー信号なし（揺れテストで効果を確認できます）'};
 function sensUI(){document.querySelectorAll('.sensb').forEach(b=>b.classList.toggle('on',XY.sens==='on'));$('sst').textContent=$('sst2').textContent=SST[XY.sens]}
 function reqMotion(){
   if(XY.sens==='on')return;
   const D=window.DeviceMotionEvent;
   if(!D){XY.sens='none';sensUI();return}
   if(typeof D.requestPermission==='function'){
-    D.requestPermission().then(r=>{if(r==='granted')listen();else{XY.sens='denied';sensUI();toast('モーションセンサーが許可されませんでした')}}).catch(()=>{XY.sens='denied';sensUI()});
+    D.requestPermission().then(r=>{if(r==='granted')listen();else{XY.sens='denied';sensUI();toast('モーションセンサーが許可されませんでした')}}).catch(()=>{XY.sens='idle';sensUI()});
   }else listen();
 }
 function listen(){
@@ -523,7 +523,7 @@ $('cTest').onclick=$('cTest2').onclick=()=>{XY.test=!XY.test;syncTest()};
 const setM=(k,p,t)=>{$('m'+k).style.width=clamp(p,0,100)+'%';$('v'+k).textContent=t};
 function meters(){const c=XY.cfg;setM('P',XY.y*100,nn(XY.midi)+' '+Math.round(XY.f)+'Hz');setM('H',XY.h*100,Math.round(XY.h*100)+'%');setM('V',Math.cbrt(vibCents()/1200)*100,'±'+fmtC(vibCents()))}
 /* visuals */
-const COL={ac:'#3b6cff',sub:'#8a90a0',line:'#e6e8ee',ink:'#1c1f26'};
+const COL={ac:'#ffffff',sub:'#8c8c91',line:'#2a2a2d',ink:'#f4f4f5'};
 function refreshCol(){const cs=getComputedStyle(document.documentElement);for(const k in COL)COL[k]=cs.getPropertyValue('--'+k).trim()||COL[k]}
 const rgba=(h,a)=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return 'rgba('+(n>>16)+','+(n>>8&255)+','+(n&255)+','+a+')'};
 addEventListener('resize',refreshCol);
@@ -579,7 +579,7 @@ function draw(){
 function frame(){
   requestAnimationFrame(frame);
   XY.raw*=.9;XY.mouse*=.9;
-  const tg=Math.max(XY.raw,(thVis&&TH.src==='mouse')?0:XY.mouse,XY.test?1:0);
+  const tg=Math.max(XY.raw,XY.mouse,XY.test?1:0);
   XY.m+=(tg>XY.m?.35:.06)*(tg-XY.m);if(XY.m<.01)XY.m=0;
   const v=XY.v;
   if(v){const t=ctx.currentTime;v.lg.gain.setTargetAtTime(vibCents(),t,.04);v.lfo.frequency.setTargetAtTime(4.5+XY.m*3,t,.05)}
@@ -603,61 +603,10 @@ calc();syncCfg();sensUI();refreshCol();meters();requestAnimationFrame(frame);
 dbGet('__xy__').then(c=>{if(c){Object.assign(XY.cfg,c);syncCfg();calc();meters()}}).catch(()=>{});
 if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission!=='function')listen();
 
-/* ---------- Theremin (camera hand tracking) ---------- */
-const SKIN0={y0:40,cb0:77,cb1:127,cr0:133,cr1:173};
-const TH={src:null,cfg:{lo:48,span:3,hmax:1,vib:.6,vw:.35,vol:.5,thr:.02,zt:.6,skin:null},hand:false,x:.5,y:.5,z:0,midi:60,f:261.6,h:0,vol:0,vc:0,v:null,seen:0,lostAt:0,vid:$('vid'),px:null,py:null,r:null,mp:false,m:{x:.5,y:.5},trail:[],stream:null,st:'',eng:'skin',hr:null,mpState:'',busy:false};
-let thVis=false,thf=0,thm=0,ph2=0,ph3=0,tbuf=null,fbuf=null,lastData=null,bestL=-1;
+/* ---------- Theremin (MediaPipe Hands) ---------- */
+const TH={cfg:{lo:48,span:3,hmax:1,vib:.6,vw:.35,vol:.5,mv:.8},cam:'idle',manualOff:false,armed:false,hand:false,x:.5,y:.5,z:0,midi:60,f:261.6,h:0,vol:0,vc:0,v:null,seen:0,lostAt:0,vid:$('vid'),hr:null,busy:false,stream:null,st:''};
+let thVis=false,thm=0,ph2=0,tbuf=null;
 function ensureAn(){if(!an){an=ctx.createAnalyser();an.fftSize=2048;const z=ctx.createGain();z.gain.value=0;an.connect(z);z.connect(ctx.destination);SHP=new Float32Array(2048);for(let i=0;i<2048;i++)SHP[i]=Math.tanh(1.6*(i/1023.5-1))/Math.tanh(1.6)}}
-/* --- camera: skin-colour blob tracking on a 64x48 frame --- */
-const CW=64,CH=48,cc=document.createElement('canvas'),mc=document.createElement('canvas');cc.width=mc.width=CW;cc.height=mc.height=CH;
-const cx2=cc.getContext('2d',{willReadFrequently:true}),mx=mc.getContext('2d'),mimg=mx.createImageData(CW,CH);
-const lab=new Int16Array(CW*CH),stk=new Int16Array(CW*CH),skm=new Uint8Array(CW*CH);
-function camStep(){
-  const vd=TH.vid;if(!vd||vd.readyState<2)return null;
-  cx2.drawImage(vd,0,0,CW,CH);const d=cx2.getImageData(0,0,CW,CH).data;lastData=d;
-  const S=TH.cfg.skin||SKIN0,N=CW*CH;lab.fill(-1);
-  for(let i=0,p=0;i<N;i++,p+=4){const r=d[p],g=d[p+1],b=d[p+2],Y=.299*r+.587*g+.114*b,Cb=128-.1687*r-.3313*g+.5*b,Cr=128+.5*r-.4187*g-.0813*b;skm[i]=(Y>S.y0&&Cb>=S.cb0&&Cb<=S.cb1&&Cr>=S.cr0&&Cr<=S.cr1)?1:0}
-  let best=null,L=0;
-  for(let i=0;i<N;i++){
-    if(!skm[i]||lab[i]>=0)continue;
-    let sp=0,n=0,sx=0,sy=0;stk[sp++]=i;lab[i]=L;
-    while(sp){const q=stk[--sp],x=q%CW,y=(q/CW)|0;n++;sx+=x;sy+=y;
-      if(x>0&&skm[q-1]&&lab[q-1]<0){lab[q-1]=L;stk[sp++]=q-1}
-      if(x<CW-1&&skm[q+1]&&lab[q+1]<0){lab[q+1]=L;stk[sp++]=q+1}
-      if(y>0&&skm[q-CW]&&lab[q-CW]<0){lab[q-CW]=L;stk[sp++]=q-CW}
-      if(y<CH-1&&skm[q+CW]&&lab[q+CW]<0){lab[q+CW]=L;stk[sp++]=q+CW}}
-    const mx0=sx/n,my0=sy/n;let sc=n;
-    if(TH.px!=null)sc=n/(1+Math.hypot(mx0/CW-TH.px,my0/CH-TH.py)*4);
-    if(!best||sc>best.sc)best={sc,n,cx:mx0,cy:my0,L};
-    L++;
-  }
-  if(!best||best.n<N*TH.cfg.thr||best.n>N*.85){bestL=-1;return null}
-  bestL=best.L;const md=mimg.data;
-  for(let i=0,p=0;i<N;i++,p+=4){const on=lab[i]===bestL;md[p]=110;md[p+1]=200;md[p+2]=255;md[p+3]=on?255:0}
-  mx.putImageData(mimg,0,0);
-  return{x:1-best.cx/CW,rx:best.cx/CW,y:best.cy/CH,size:Math.sqrt(best.n/N)};
-}
-function calibrate(){
-  if(!lastData){toast('カメラ映像がありません');return}
-  const px=[];for(let y=CH/2-5;y<CH/2+5;y++)for(let x=CW/2-5;x<CW/2+5;x++){const p=(y*CW+x)*4,r=lastData[p],g=lastData[p+1],b=lastData[p+2];px.push([.299*r+.587*g+.114*b,128-.1687*r-.3313*g+.5*b,128+.5*r-.4187*g-.0813*b])}
-  const st=i=>{const m=px.reduce((a,q)=>a+q[i],0)/px.length,sd=Math.sqrt(px.reduce((a,q)=>a+(q[i]-m)*(q[i]-m),0)/px.length);return[m,Math.max(9,sd*2.5)]};
-  const[yM,yS]=st(0),[bM,bS]=st(1),[rM,rS]=st(2);
-  TH.cfg.skin={y0:Math.max(20,yM-yS*2.5),cb0:bM-bS,cb1:bM+bS,cr0:rM-rS,cr1:rM+rS};thSave();toast('手の色を登録しました');
-}
-async function useCam(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){toast('この環境ではカメラを使えません。タッチ操作に切り替えます');setSrc('mouse');return}
-  try{
-    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});
-    camStop();TH.stream=st;TH.vid.srcObject=st;await TH.vid.play();setSrc('cam');
-    initMP().then(()=>{if(TH.src==='cam')TH.eng='mp'}).catch(()=>{TH.eng='skin';toast('MediaPipeを読み込めないため、簡易認識で動作します')});
-  }catch(e){toast('カメラが許可されませんでした。タッチ操作に切り替えます');setSrc('mouse')}
-}
-function camStop(){if(TH.stream){TH.stream.getTracks().forEach(t=>t.stop());TH.stream=null}TH.vid.srcObject=null;TH.r=null;TH.px=null}
-function setSrc(s){
-  if(TH.src==='cam'&&s!=='cam')camStop();
-  TH.src=s;TH.hand=false;TH.seen=0;TH.mp=false;TH.hr=null;TH.eng=(s==='cam'&&MPH)?'mp':'skin';
-  $('thov').style.display=s?'none':'flex';$('th').classList.toggle('m',s==='mouse');syncTH();
-}
 /* --- voice --- */
 function thCalc(){const c=TH.cfg;TH.midi=c.lo+c.span*12*TH.y;TH.f=440*Math.pow(2,(TH.midi-69)/12);TH.h=(1-TH.x)*c.hmax;TH.vol=Math.pow(TH.z,1.5);TH.vc=Math.min(1,XY.m*c.vib*2)*1200*Math.pow(c.vw,3)}
 function thStart(){
@@ -685,23 +634,64 @@ function thStop(){
   v.env.gain.cancelScheduledValues(t);v.env.gain.setValueAtTime(v.env.gain.value,t);v.env.gain.setTargetAtTime(0,t,.04);
   setTimeout(()=>{try{v.o.forEach(o=>o.stop());v.lfo.stop();v.env.disconnect();v.vo.disconnect()}catch(e){}},350);
 }
+/* --- MediaPipe Hands (CDN): 21-point hand skeleton --- */
+var MP_BASE='https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/',MPH=null,mpP=null;
+var HC=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
+function loadScript(u){return new Promise((res,rej)=>{const e=document.createElement('script');e.src=u;e.crossOrigin='anonymous';e.onload=res;e.onerror=()=>rej(new Error('script'));document.head.appendChild(e)})}
+function initMP(){
+  if(mpP)return mpP;
+  mpP=(async()=>{
+    if(!window.Hands)await loadScript(MP_BASE+'hands.js');
+    const h=new window.Hands({locateFile:f=>MP_BASE+f});
+    h.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.5,selfieMode:false});
+    h.onResults(mpResults);
+    await h.initialize();
+    MPH=h;return h;
+  })().catch(e=>{mpP=null;throw e});
+  return mpP;
+}
+/* 手のひらの中心(0,5,9,13,17の平均)→X/Y、手のひらの大きさ→Z（距離）*/
+function mpResults(r){
+  const L=r.multiHandLandmarks&&r.multiHandLandmarks[0];
+  if(!L){TH.hr=null;return}
+  const vw=TH.vid.videoWidth||640,vh=TH.vid.videoHeight||480;
+  let cx=0,cy=0;[0,5,9,13,17].forEach(i=>{cx+=L[i].x;cy+=L[i].y});cx/=5;cy/=5;
+  const d=(a,b)=>Math.hypot((L[a].x-L[b].x)*vw,(L[a].y-L[b].y)*vh)/vw;
+  const size=(d(0,9)+d(5,17)*1.15)/2,far=.045,near=.34-.2*TH.cfg.vol;
+  const z=clamp(Math.log(Math.max(size,.001)/far)/Math.log(near/far));
+  TH.hr={x:1-cx,y:cy,z,lm:L,t:performance.now()};
+}
+function mpStep(){
+  if(!MPH||TH.busy)return;const v=TH.vid;if(!v||v.readyState<2)return;
+  TH.busy=true;MPH.send({image:v}).catch(()=>{}).then(()=>{TH.busy=false});
+}
+/* --- camera: 画面に入ると自動で起動 --- */
+async function startCam(){
+  if(TH.cam==='on'||TH.cam==='load')return;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){TH.cam='none';thOv();return}
+  TH.cam='load';thOv();
+  let st;
+  try{st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false})}
+  catch(e){TH.cam=(e&&(e.name==='NotFoundError'||e.name==='OverconstrainedError'||e.name==='NotReadableError'))?'none':'denied';thOv();return}
+  TH.stream=st;TH.vid.srcObject=st;
+  try{await TH.vid.play();await initMP();TH.cam='on'}
+  catch(e){camStop();TH.cam='fail'}
+  thOv();
+}
+function camStop(){if(TH.stream){TH.stream.getTracks().forEach(t=>t.stop());TH.stream=null}TH.vid.srcObject=null;TH.hr=null;TH.hand=false;TH.busy=false}
+const OVM={idle:['カメラを起動しています…'],load:['カメラと手の認識モデルを準備しています…'],off:['カメラはオフです','📷 カメラをオンにする'],denied:['カメラが許可されていません。ブラウザの設定で許可してから、もう一度お試しください。','📷 もう一度許可する'],none:['この端末ではカメラを使えません。'],fail:['手の認識モデルを読み込めませんでした。ネットワークを確認してください。','🔄 再試行']};
+function thOv(){
+  const m=OVM[TH.cam];
+  $('thov').style.display=TH.cam==='on'?'none':'flex';
+  if(m){$('thmsg').textContent=m[0];const b=$('ovCam');b.style.display=m[1]?'':'none';if(m[1])b.textContent=m[1]}
+  syncTH();
+}
+function thAuto(){if(TH.armed&&thVis&&!TH.manualOff&&(TH.cam==='idle'||TH.cam==='fail'))startCam()}
 /* --- per-frame control: hand present → sound, hand lost → mute --- */
 function thFrame(){
-  const c=TH.cfg,now=performance.now(),act=thVis&&!document.hidden&&TH.src;
+  const now=performance.now(),act=thVis&&!document.hidden&&TH.cam==='on';
   let seen=false,x=0,y=0,z=0;
-  if(act){
-    if(TH.src==='cam'){
-      if(TH.eng==='mp'){
-        mpStep();const r=TH.hr;
-        if(r&&now-r.t<300){seen=true;x=r.x;y=r.y;z=r.z;TH.px=r.rx;TH.py=r.y}else TH.px=null;
-      }else{
-        if(++thf%2===0)TH.r=camStep();
-        const r=TH.r;
-        if(r){seen=true;x=r.x;y=r.y;const s1=.75-.5*c.vol;z=clamp((r.size-.10)/(s1-.10));TH.px=r.rx;TH.py=r.y}else TH.px=null;
-      }
-    }else if(TH.src==='mouse'){if(TH.mp){seen=true;x=TH.m.x;y=TH.m.y;z=c.zt}}
-    else if(TH.src==='demo'){const t=now/1000;seen=true;x=.5+.38*Math.sin(t*.8);y=.5+.32*Math.sin(t*.55+1);z=clamp(.55+.4*Math.sin(t*.4))}
-  }
+  if(act){mpStep();const r=TH.hr;if(r&&now-r.t<300){seen=true;x=r.x;y=r.y;z=r.z}}
   if(seen){
     TH.lostAt=0;TH.seen++;
     if(!TH.hand&&TH.seen<=1){TH.x=x;TH.y=y;TH.z=z}else{TH.x+=(x-TH.x)*.35;TH.y+=(y-TH.y)*.35;TH.z+=(z-TH.z)*.3}
@@ -714,7 +704,7 @@ function thFrame(){
   if(TH.hand&&!TH.v)thStart();else if(!TH.hand&&TH.v)thStop();
   if(TH.v)thUpdate();
   if(!thVis)return;
-  const st=!TH.src?'':TH.src==='demo'?'✨ デモ再生中':TH.hand?(TH.eng==='mp'?'✋ 手を検出中（MediaPipe）':'✋ 手を検出中（簡易）'):(TH.src==='cam'&&TH.mpState==='load'?'手の認識モデルを読み込み中…':TH.src==='mouse'?'画面を押して演奏':'手をカメラにかざしてください');
+  const st=TH.cam!=='on'?'':TH.hand?'✋ 手を検出中':'手をカメラにかざしてください';
   if(st!==TH.st){TH.st=st;$('thst').textContent=st}
   thDraw();if(EDIT&&++thm%3===0)thMeters();
 }
@@ -724,40 +714,7 @@ function thMeters(){
   setM('Z2',TH.hand?TH.vol*100:0,TH.hand?Math.round(TH.vol*100)+'%':'—');
   setM('V2',Math.cbrt(TH.vc/1200)*100,'±'+fmtC(TH.vc));
 }
-/* --- MediaPipe Hands (CDN): 21-point hand skeleton --- */
-var MP_BASE='https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/',MPH=null,mpP=null;
-var HC=[[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
-function loadScript(u){return new Promise((res,rej)=>{const e=document.createElement('script');e.src=u;e.crossOrigin='anonymous';e.onload=res;e.onerror=()=>rej(new Error('script'));document.head.appendChild(e)})}
-function initMP(){
-  if(mpP)return mpP;
-  TH.mpState='load';
-  mpP=(async()=>{
-    if(!window.Hands)await loadScript(MP_BASE+'hands.js');
-    const h=new window.Hands({locateFile:f=>MP_BASE+f});
-    h.setOptions({maxNumHands:1,modelComplexity:0,minDetectionConfidence:.6,minTrackingConfidence:.5,selfieMode:false});
-    h.onResults(mpResults);
-    await h.initialize();
-    MPH=h;TH.mpState='ok';return h;
-  })().catch(e=>{TH.mpState='fail';mpP=null;throw e});
-  return mpP;
-}
-/* 手のひらの中心(0,5,9,13,17の平均)→X/Y、手のひらの大きさ→Z（距離）*/
-function mpResults(r){
-  const L=r.multiHandLandmarks&&r.multiHandLandmarks[0];
-  if(!L){TH.hr=null;return}
-  const vw=TH.vid.videoWidth||640,vh=TH.vid.videoHeight||480;
-  let cx=0,cy=0;[0,5,9,13,17].forEach(i=>{cx+=L[i].x;cy+=L[i].y});cx/=5;cy/=5;
-  const d=(a,b)=>Math.hypot((L[a].x-L[b].x)*vw,(L[a].y-L[b].y)*vh)/vw;
-  const size=(d(0,9)+d(5,17)*1.15)/2,far=.045,near=.34-.2*TH.cfg.vol;
-  const z=clamp(Math.log(Math.max(size,.001)/far)/Math.log(near/far));
-  TH.hr={x:1-cx,rx:cx,y:cy,z,size,lm:L,t:performance.now()};
-}
-function mpStep(){
-  if(!MPH||TH.busy)return;const v=TH.vid;if(!v||v.readyState<2)return;
-  TH.busy=true;MPH.send({image:v}).catch(()=>{}).then(()=>{TH.busy=false});
-}
-/* --- visualizer --- */
-const hsl=(h,s,l,a)=>'hsla('+h+','+s+'%,'+l+'%,'+a+')';
+/* --- visualizer (monochrome) --- */
 function thDraw(){
   const cv=$('cv2'),g=cv.getContext('2d'),W=cv.clientWidth,H=cv.clientHeight,dpr=Math.min(2,devicePixelRatio||1),c=TH.cfg;
   if(!W||!H)return;
@@ -765,8 +722,8 @@ function thDraw(){
   g.setTransform(dpr,0,0,dpr,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;g.shadowBlur=0;g.clearRect(0,0,W,H);
   const on=!!TH.v,span=c.span*12,px=TH.x*W,vol=on?TH.vol:0;
   ph2+=(4.5+XY.m*3)*Math.PI*2/60;
-  if(TH.src==='cam'&&TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.14;g.drawImage(TH.vid,0,0,W,H);if(TH.hand&&TH.eng!=='mp'){g.globalAlpha=.25;g.drawImage(mc,0,0,W,H)}g.restore()}
-  const gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,rgba(COL.ac,.22*c.hmax));gr.addColorStop(1,rgba(COL.ac,0));g.fillStyle=gr;g.fillRect(0,0,W,H);
+  if(TH.cam==='on'&&TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.16;g.drawImage(TH.vid,0,0,W,H);g.restore()}
+  const gr=g.createLinearGradient(0,0,W,0);gr.addColorStop(0,rgba(COL.ac,.2*c.hmax));gr.addColorStop(1,rgba(COL.ac,0));g.fillStyle=gr;g.fillRect(0,0,W,H);
   g.font='600 10px '+FONT;g.textBaseline='alphabetic';g.textAlign='left';
   for(let m=Math.ceil(c.lo);m<=c.lo+span;m++){
     const y=(m-c.lo)/span*H,C=m%12===0;
@@ -775,12 +732,11 @@ function thDraw(){
   }
   g.globalAlpha=1;g.fillStyle=COL.sub;
   g.textAlign='right';g.fillText('▲ LOW',W-10,16);g.fillText('▼ HIGH',W-10,H-10);g.textAlign='left';g.fillText('◀ RICH',10,H-10);
-  /* 音量（距離）メーター */
   const my=44,mh=H-88;
   g.fillStyle=COL.line;g.fillRect(W-14,my,4,mh);g.fillStyle=COL.ac;g.fillRect(W-14,my+mh*(1-vol),4,mh*vol);
   g.fillStyle=COL.sub;g.textAlign='right';g.fillText('VOL',W-10,my-6);g.textAlign='left';
   const py=TH.y*H,wob=on?Math.sin(ph2)*Math.min(40,TH.vc/100*H/span):0,py2=py+wob;
-  g.strokeStyle=COL.ac;g.globalAlpha=on?.3:.15;g.lineWidth=1;g.setLineDash([4,5]);
+  g.strokeStyle=COL.ac;g.globalAlpha=on?.3:.12;g.lineWidth=1;g.setLineDash([4,5]);
   g.beginPath();g.moveTo(px,0);g.lineTo(px,H);g.moveTo(0,py);g.lineTo(W,py);g.stroke();g.setLineDash([]);
   if(on&&an){
     if(!tbuf||tbuf.length!==an.fftSize)tbuf=new Float32Array(an.fftSize);
@@ -789,10 +745,10 @@ function thDraw(){
     const N=Math.min(tbuf.length-s-1,Math.round(ctx.sampleRate/TH.f*2.5));
     if(N>8){g.globalAlpha=.9;g.lineWidth=2;g.beginPath();for(let i=0;i<N;i++){const x=i/(N-1)*W,y=py2-tbuf[s+i]*260;i?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()}
   }
-  if(TH.eng==='mp'&&TH.src==='cam'&&TH.hr){
-    const L=TH.hr.lm;g.globalAlpha=.55;g.strokeStyle=COL.ac;g.lineWidth=2;g.lineCap='round';
+  if(TH.cam==='on'&&TH.hr){
+    const L=TH.hr.lm;g.globalAlpha=.4;g.strokeStyle=COL.ac;g.lineWidth=1.5;g.lineCap='round';
     HC.forEach(e=>{g.beginPath();g.moveTo((1-L[e[0]].x)*W,L[e[0]].y*H);g.lineTo((1-L[e[1]].x)*W,L[e[1]].y*H);g.stroke()});
-    g.fillStyle=COL.ac;L.forEach(p=>{g.beginPath();g.arc((1-p.x)*W,p.y*H,2.5,0,7);g.fill()});
+    g.fillStyle=COL.ac;L.forEach(p=>{g.beginPath();g.arc((1-p.x)*W,p.y*H,2,0,7);g.fill()});
   }
   const R=18+vol*34+(on?3*Math.sin(ph2*2):0);
   g.globalAlpha=on?1:.4;g.fillStyle=rgba(COL.ac,.18);g.strokeStyle=COL.ac;g.lineWidth=2;g.beginPath();g.arc(px,py2,R,0,7);g.fill();g.stroke();
@@ -804,47 +760,41 @@ function thDraw(){
     g.fillStyle=COL.ink;g.font='700 28px '+FONT;g.fillText(nn(TH.midi),14,40);
     g.fillStyle=COL.sub;g.font='600 12px '+FONT;g.fillText(Math.round(TH.f)+' Hz',16,58);
     if(EDIT)g.fillText('倍音 '+Math.round(TH.h*100)+'%  ·  距離音量 '+Math.round(TH.vol*100)+'%  ·  揺れ ±'+fmtC(TH.vc),16,76);
-  }else{
-    g.fillStyle=COL.sub;g.font='600 13px '+FONT;g.textAlign='center';
-    g.fillText(TH.src==='cam'?'手をカメラにかざしてください':'画面をドラッグして発音',W/2,H/2+60);
   }
 }
-
 /* --- UI wiring --- */
-const th=$('th');
-function thPos(e){const r=th.getBoundingClientRect();TH.m={x:clamp((e.clientX-r.left)/r.width),y:clamp((e.clientY-r.top)/r.height)}}
-th.addEventListener('pointerdown',e=>{if(TH.src!=='mouse')return;TH.mp=true;thPos(e);try{th.setPointerCapture(e.pointerId)}catch(_){}});
-th.addEventListener('pointermove',e=>{if(TH.mp&&TH.src==='mouse')thPos(e)});
-['pointerup','pointercancel'].forEach(t=>th.addEventListener(t,()=>{TH.mp=false}));
-th.addEventListener('wheel',e=>{if(TH.src==='mouse'){e.preventDefault();TH.cfg.zt=clamp(TH.cfg.zt-e.deltaY*.001);thSave()}},{passive:false});
-th.addEventListener('contextmenu',e=>e.preventDefault());
-$('ovCam').onclick=useCam;$('ovMouse').onclick=()=>setSrc('mouse');$('ovDemo').onclick=()=>setSrc('demo');
-$('camb').onclick=()=>TH.src==='cam'?setSrc(null):useCam();
+$('ovCam').onclick=()=>{TH.manualOff=false;if(TH.cam!=='load'&&TH.cam!=='on'){TH.cam='idle';startCam()}};
+$('camb').onclick=()=>{
+  if(TH.cam==='on'){TH.manualOff=true;camStop();TH.cam='off';thOv()}
+  else{TH.manualOff=false;TH.cam='idle';startCam()}
+};
 $('sens2').onclick=reqMotion;
-$('cCal').onclick=()=>{if(TH.src!=='cam'){toast('カメラ入力のときに使えます');return}toast('2秒後に中央の色を登録します。手を中央にかざしてください');setTimeout(calibrate,2000)};
-$('cCalR').onclick=()=>{TH.cfg.skin=null;thSave();toast('標準の肌色設定に戻しました')};
-$('cSrc').innerHTML=[['cam','カメラ'],['mouse','タッチ/マウス'],['demo','デモ']].map(a=>'<button class="chip" data-s="'+a[0]+'">'+a[1]+'</button>').join('');
-$('cSrc').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;b.dataset.s==='cam'?useCam():setSrc(b.dataset.s)};
 function syncTH(){
-  const c=TH.cfg;if(c.mv==null)c.mv=.8;$('cM2').value=c.mv;$('lM2').textContent=Math.round(c.mv*100)+'%';
-  $('cS2').value=c.span;$('cL2').value=c.lo;$('cH2').value=c.hmax;$('cD2').value=c.vol;$('cV2').value=c.vib;$('cW2').value=c.vw;$('cT2').value=c.thr;$('cZ2').value=c.zt;
+  const c=TH.cfg;
+  $('cS2').value=c.span;$('cL2').value=c.lo;$('cH2').value=c.hmax;$('cD2').value=c.vol;$('cV2').value=c.vib;$('cW2').value=c.vw;$('cM2').value=c.mv;
   $('lS2').textContent=c.span+'oct（'+nn(c.lo)+'〜'+nn(c.lo+c.span*12)+'）';$('lL2').textContent=nn(c.lo);
   $('lH2').textContent=Math.round(c.hmax*100)+'%';$('lD2').textContent=Math.round(c.vol*100)+'%';$('lV2').textContent=Math.round(c.vib*100)+'%';
-  $('lW2').textContent='±'+fmtC(1200*Math.pow(c.vw,3));$('lT2').textContent=(c.thr*100).toFixed(1)+'%';$('lZ2').textContent=Math.round(c.zt*100)+'%';
-  document.querySelectorAll('#cSrc .chip').forEach(b=>b.classList.toggle('on',b.dataset.s===TH.src));
-  $('camb').classList.toggle('on',TH.src==='cam');
+  $('lW2').textContent='±'+fmtC(1200*Math.pow(c.vw,3));$('lM2').textContent=Math.round(c.mv*100)+'%';
+  $('camb').classList.toggle('on',TH.cam==='on');
 }
 let tt;
 function thSave(){syncTH();clearTimeout(tt);tt=setTimeout(()=>dbPut('__th__',TH.cfg).catch(()=>{}),500)}
-[['cS2','span'],['cL2','lo'],['cH2','hmax'],['cD2','vol'],['cV2','vib'],['cW2','vw'],['cT2','thr'],['cZ2','zt'],['cM2','mv']].forEach(a=>$(a[0]).oninput=e=>{TH.cfg[a[1]]=+e.target.value;thSave()});
-try{new IntersectionObserver(es=>{thVis=es[es.length-1].isIntersecting;if(TH.stream)TH.stream.getTracks().forEach(t=>t.enabled=thVis)},{threshold:.3}).observe($('s0'))}catch(e){thVis=true}
+[['cS2','span'],['cL2','lo'],['cH2','hmax'],['cD2','vol'],['cV2','vib'],['cW2','vw'],['cM2','mv']].forEach(a=>$(a[0]).oninput=e=>{TH.cfg[a[1]]=+e.target.value;thSave()});
+try{new IntersectionObserver(es=>{thVis=es[es.length-1].isIntersecting;if(TH.stream)TH.stream.getTracks().forEach(t=>t.enabled=thVis);thAuto()},{threshold:.3}).observe($('s0'))}catch(e){thVis=true}
+setTimeout(()=>{TH.armed=true;thAuto()},900);
 $('toTH').onclick=()=>$('s0').scrollIntoView({behavior:'smooth'});
 $('toS3').onclick=()=>$('s1').scrollIntoView({behavior:'smooth'});
-syncTH();
+syncTH();thOv();
 dbGet('__th__').then(c=>{if(c){Object.assign(TH.cfg,c);syncTH()}}).catch(()=>{});
 /* 起動時はサンプラー画面（中央）を表示 */
 const goS1=()=>{const v=$('v');v.scrollTop=$('s1').getBoundingClientRect().top-v.getBoundingClientRect().top+v.scrollTop};
 goS1();addEventListener('load',goS1);
+
+/* ---------- 許可の自動化 ----------
+   ・カメラ：テルミン画面が表示されると自動で起動（許可ダイアログもその時に表示）
+   ・モーションセンサー：最初の1タップで自動リクエスト（iOSのみダイアログあり／Androidは自動で有効） */
+let sensAsked=false;
+addEventListener('click',()=>{if(sensAsked)return;sensAsked=true;reqMotion();thAuto()},true);
 
 /* ---------- Init ---------- */
 

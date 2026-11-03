@@ -1,6 +1,6 @@
 // オフラインでも起動できるよう、アプリ本体と MediaPipe のファイルをキャッシュします。
 // index.html を更新したら VERSION を上げてください。
-const VERSION = 'sampler-v6';
+const VERSION = 'sampler-v7';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
