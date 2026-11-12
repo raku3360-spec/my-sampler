@@ -139,6 +139,18 @@ body.ed #tsov{display:none!important}
 @keyframes pgInL{from{transform:translateX(28px);opacity:.25}to{transform:none;opacity:1}}
 @keyframes pgInR{from{transform:translateX(-28px);opacity:.25}to{transform:none;opacity:1}}
 .pgL{animation:pgInL .22s ease-out}.pgR{animation:pgInR .22s ease-out}
+.xyw{position:relative;overflow:hidden}
+#xy,#th,#tsw{will-change:transform}
+.gst{position:absolute;left:14px;right:14px;top:10px;bottom:8px;pointer-events:none}
+.gst.card{background:var(--card);border-radius:22px;box-shadow:var(--sh);overflow:hidden}
+.gcv{position:absolute;inset:0;width:100%;height:100%}
+.gg{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:10px}
+.gg.edit .pad{border:1.5px dashed #5c5c61}
+html{background:var(--bg)}
+@media (min-width:600px){
+  body{max-width:560px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line)}
+  .sheet{max-width:560px;margin:0 auto}
+}
 </style>
 </head>
 <body>
@@ -217,6 +229,12 @@ body.ed #tsov{display:none!important}
     <div class="row"><button class="btn" id="lsSave">この名前で保存</button><button class="btn g" id="lsNew">新規（初期化）</button></div>
     <label>保存済み</label>
     <div id="lsl"></div>
+    <label>データのバックアップ・端末間の移行</label>
+    <div class="sub">ライブセット・プリセット・全ページ・音声ファイルを1つのファイル（.json）にまとめて保存し、別の端末（iPhone / Windows）や別のブラウザで読み込むと、環境と音声データをそのまま復元できます。</div>
+    <button class="btn" id="syOut" style="margin-top:12px">データのエクスポート（保存・共有）</button>
+    <button class="btn g" id="syIn" style="margin-top:8px">データのインポート（読み込み）</button>
+    <input type="file" id="syFile" accept=".json,application/json" hidden>
+    <div class="sub">エクスポート：iPhone は共有シート（「ファイルに保存」やAirDropなど）、PCはダウンロードされます。インポート：同じ名前のプリセット・ライブセットは上書きされ、現在の環境も読み込んだ内容に置き換わります。</div>
   </div>
   <div class="bar"><button class="ib fnb" aria-label="機能切り替え（長押しでメニュー）"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button></div>
 </section>
@@ -258,8 +276,8 @@ let ctx=null,master=null,S={name:'',pages:[]},cur=null,EDIT=false;
 const held=new Map();
 
 /* ---------- IndexedDB ---------- */
-const dbp=new Promise(r=>{try{const q=indexedDB.open('pocket-sampler',1);q.onupgradeneeded=()=>q.result.createObjectStore('p');q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)}catch(e){r(null)}});
-const tx=(m,fn)=>dbp.then(d=>new Promise((res,rej)=>{if(!d)return rej();const t=d.transaction('p',m);const rq=fn(t.objectStore('p'));t.oncomplete=()=>res(rq.result);t.onerror=()=>rej()}));
+const dbp=new Promise(r=>{try{const q=indexedDB.open('pocket-sampler',2);q.onupgradeneeded=()=>{const d=q.result;if(!d.objectStoreNames.contains('p'))d.createObjectStore('p')};q.onsuccess=()=>r(q.result);q.onerror=()=>r(null);q.onblocked=()=>r(null)}catch(e){r(null)}});
+const tx=(m,fn,st='p')=>dbp.then(d=>new Promise((res,rej)=>{if(!d)return rej();const t=d.transaction(st,m);const rq=fn(t.objectStore(st));t.oncomplete=()=>res(rq.result);t.onerror=()=>rej()}));
 const dbGet=k=>tx('readonly',s=>s.get(k)),dbPut=(k,v)=>tx('readwrite',s=>s.put(v,k)),dbDel=k=>tx('readwrite',s=>s.delete(k)),dbKeys=()=>tx('readonly',s=>s.getAllKeys());
 
 /* ---------- Audio ---------- */
@@ -551,8 +569,8 @@ addEventListener('resize',refreshCol);
 try{matchMedia('(prefers-color-scheme:dark)').addEventListener('change',refreshCol)}catch(e){}
 let ph=0,buf=null,vis=false,fr=0;
 const FONT='-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif';
-function draw(){
-  const cv=$('cv'),g=cv.getContext('2d'),W=cv.clientWidth,H=cv.clientHeight,dpr=Math.min(2,devicePixelRatio||1),c=XY.cfg;
+function draw(cvo){
+  const cv=cvo||$('cv'),g=cv.getContext('2d'),W=cv.clientWidth,H=cv.clientHeight,dpr=Math.min(2,devicePixelRatio||1),c=XY.cfg;
   if(!W||!H)return;
   if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
   g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
@@ -801,14 +819,13 @@ function harmFx(g,o){
   g.restore();
 }
 /* --- visualizer (monochrome) --- */
-function thDraw(){
-  const cv=$('cv2'),g=cv.getContext('2d'),W=cv.clientWidth,H=cv.clientHeight,dpr=Math.min(2,devicePixelRatio||1),c=TH.cfg;
+function thDraw(cvo){
+  const cv=cvo||$('cv2'),g=cv.getContext('2d'),W=cv.clientWidth,H=cv.clientHeight,dpr=Math.min(2,devicePixelRatio||1),c=TH.cfg;
   if(!W||!H)return;
   if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
   g.setTransform(dpr,0,0,dpr,0,0);g.globalCompositeOperation='source-over';g.globalAlpha=1;g.shadowBlur=0;g.clearRect(0,0,W,H);
   const on=!!TH.v,span=c.span*12,px=TH.x*W,vol=on?TH.vol:0;
   ph2+=(4.5+XY.m*3)*Math.PI*2/60;
-  if(TH.cam==='on'&&TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.16;g.drawImage(TH.vid,0,0,W,H);g.restore()}
     g.font='600 10px '+FONT;g.textBaseline='alphabetic';g.textAlign='left';
   for(let m=Math.ceil(c.lo);m<=c.lo+span;m++){
     const y=(m-c.lo)/span*H,C=m%12===0;
@@ -1072,7 +1089,7 @@ function tsStep(){
     TSs.level=Math.min(1.6,c.base*1.25*TSs.zf*TSs.bst);
   }
   if(TSs.bus)TSs.bus.gain.setTargetAtTime(TSs.level,ctx.currentTime,.04);
-  if(TH.hand&&!EDIT){
+  if(TH.hand&&!EDIT&&!swDrag){
     const r=$('tsw').getBoundingClientRect(),px=r.left+TH.x*r.width,py=r.top+TH.y*r.height;
     let hv=-1;
     for(let i=0;i<P.pads.length;i++){const el=P.pads[i].el;if(!el)continue;const q=el.getBoundingClientRect();if(px>=q.left&&px<=q.right&&py>=q.top&&py<=q.bottom){hv=i;break}}
@@ -1092,7 +1109,6 @@ function tsDraw(){
   if(cv.width!==Math.round(W*dpr)||cv.height!==Math.round(H*dpr)){cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
   g.setTransform(dpr,0,0,dpr,0,0);g.globalAlpha=1;g.clearRect(0,0,W,H);
   if(TH.cam!=='on')return;
-  if(TH.vid.readyState>=2){g.save();g.translate(W,0);g.scale(-1,1);g.globalAlpha=.1;g.drawImage(TH.vid,0,0,W,H);g.restore()}
   if(TH.hr){
     const L=TH.hr.lm;g.globalAlpha=.4;g.strokeStyle=COL.ac;g.lineWidth=1.5;g.lineCap='round';
     HC.forEach(e=>{g.beginPath();g.moveTo((1-L[e[0]].x)*W,L[e[0]].y*H);g.lineTo((1-L[e[1]].x)*W,L[e[1]].y*H);g.stroke()});
@@ -1160,34 +1176,151 @@ $('fnp').addEventListener('click',e=>{
   const it=e.target.closest('.fni');if(it)fnGo(it.dataset.s);else fnHide();
 });
 
-/* ---------- 横スワイプでページ移動（XY / テルミン / テルミン式サンプラー） ---------- */
-let lastSwipe=0;
-function swipeArea(secId,mode,stageId,skip){
-  const el=$(secId);let sx=0,sy=0,t0=0,pid=null;
+/* ---------- 横スワイプでページ移動：指に合わせて隣のページが見えてくる（XY / テルミン / テルミン式サンプラー） ---------- */
+let lastSwipe=0,swDrag=false;
+function ghostGrid(pg){
+  const g=document.createElement('div');g.className='gg'+(EDIT?' edit':'');
+  pg.pads.forEach((pad,i)=>{
+    const el=document.createElement('div');el.className='pad';
+    el.innerHTML='<span class="num"></span><span class="nm"></span><span class="tg"></span>';
+    el.querySelector('.num').textContent=i+1;
+    const old=pad.el;pad.el=el;updPad(pad);pad.el=old;g.append(el);
+  });
+  return g;
+}
+function ghostDraw(kind,cfg,cv){
+  if(kind==='xy'){
+    const sv={cfg:XY.cfg,v:XY.v,pts:PTS.xy};XY.cfg=cfg;XY.v=null;PTS.xy=[];calc();draw(cv);
+    XY.cfg=sv.cfg;XY.v=sv.v;PTS.xy=sv.pts;calc();
+  }else{
+    const sv={cfg:TH.cfg,v:TH.v,hr:TH.hr,pts:PTS.th};TH.cfg=cfg;TH.v=null;TH.hr=null;PTS.th=[];thCalc();thDraw(cv);
+    TH.cfg=sv.cfg;TH.v=sv.v;TH.hr=sv.hr;PTS.th=sv.pts;thCalc();
+  }
+}
+function swipeArea(secId,mode,stageId,skip,kind){
+  const el=$(secId);let sx=0,sy=0,t0=0,pid=null,drag=false,gh=null,gdir=0,W=1;
+  const stage=()=>$(stageId);
+  function mkGhost(dir){
+    if(gh){gh.remove();gh=null}
+    gdir=dir;const i=pgI(mode)+dir;if(i<0||i>=pgN(mode))return;
+    gh=document.createElement('div');gh.className='gst'+(kind==='ts'?'':' card');
+    if(kind==='ts')gh.append(ghostGrid(PG.ts.pages[i]));
+    else{const cv=document.createElement('canvas');cv.className='gcv';gh.append(cv)}
+    stage().parentElement.append(gh);
+    if(kind!=='ts')ghostDraw(kind,PG[kind].pages[i],gh.firstChild);
+  }
+  const setX=(dx,has)=>{
+    stage().style.transform='translateX('+(has?dx:dx*.28)+'px)';
+    if(gh)gh.style.transform='translateX('+(dx+(dx<0?W:-W))+'px)';
+  };
   el.addEventListener('pointerdown',e=>{
     if(pid!==null||e.target.closest('input,.fnb,'+skip))return;
-    pid=e.pointerId;sx=e.clientX;sy=e.clientY;t0=performance.now();
+    pid=e.pointerId;sx=e.clientX;sy=e.clientY;t0=performance.now();drag=false;
+  });
+  el.addEventListener('pointermove',e=>{
+    if(e.pointerId!==pid)return;
+    const dx=e.clientX-sx,dy=e.clientY-sy;
+    if(!drag){
+      if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.4){drag=true;swDrag=true;W=stage().parentElement.clientWidth;stage().style.transition='none'}
+      else return;
+    }
+    const dir=dx<0?1:-1;if(dir!==gdir)mkGhost(dir);
+    const i=pgI(mode)+dir;setX(dx,i>=0&&i<pgN(mode));
   });
   const end=e=>{
     if(e.pointerId!==pid)return;pid=null;
-    if(e.type==='pointercancel')return;
-    const dx=e.clientX-sx,dy=e.clientY-sy;
-    if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.6||performance.now()-t0>900)return;
-    const dir=dx<0?1:-1,i=pgI(mode),n=pgN(mode);
-    if(i+dir<0||i+dir>=n)return;
+    if(!drag)return;drag=false;
+    const dx=e.clientX-sx,v=dx/Math.max(1,performance.now()-t0),dir=dx<0?1:-1,i=pgI(mode)+dir,has=i>=0&&i<pgN(mode);
+    const go=e.type==='pointerup'&&has&&(Math.abs(dx)>W*.28||(Math.abs(v)>.45&&Math.abs(dx)>30));
     lastSwipe=performance.now();
-    pgSet(mode,i+dir);
-    const st=$(stageId);st.classList.remove('pgL','pgR');void st.offsetWidth;st.classList.add(dir>0?'pgL':'pgR');
-    setTimeout(()=>st.classList.remove('pgL','pgR'),260);
+    const st=stage(),T='transform .2s ease-out';st.style.transition=T;if(gh)gh.style.transition=T;
+    st.style.transform='translateX('+(go?-dir*W:0)+'px)';
+    if(gh)gh.style.transform='translateX('+(go?0:dir*W)+'px)';
+    setTimeout(()=>{
+      st.style.transition='none';st.style.transform='';
+      if(gh){gh.remove();gh=null}
+      gdir=0;swDrag=false;
+      if(go){pgSet(mode,i);if(mode==='xy')draw();else if(mode==='th')thDraw()}
+    },210);
   };
   el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
   el.addEventListener('click',e=>{if(performance.now()-lastSwipe<350){e.stopPropagation();e.preventDefault()}},true);
 }
-swipeArea('sts','ts','tsw','.sheet');
-swipeArea('s0','th','th','.sheet');
-swipeArea('s2','xy','xy','#xy');   /* XYパッド上はタッチ演奏のため対象外：ページ表示バーや下のパネルでスワイプ */
+swipeArea('sts','ts','tsw','.sheet','ts');
+swipeArea('s0','th','th','.sheet','th');
+swipeArea('s2','xy','xy','#xy','xy');   /* XYパッド上はタッチ演奏のため対象外：ページ表示バーや下のパネルでスワイプ */
+
+/* ---------- PC向け：キーボード操作（← → でページ、↑ ↓ で画面） ---------- */
+addEventListener('keydown',e=>{
+  if(e.target.closest&&e.target.closest('input,textarea,select'))return;
+  const id=fnCur();
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+    const m={sts:'ts',s0:'th',s1:'sampler',s2:'xy'}[id];if(!m)return;
+    const n=pgI(m)+(e.key==='ArrowRight'?1:-1);if(n<0||n>=pgN(m))return;
+    pgSet(m,n);e.preventDefault();
+  }else if(e.key==='ArrowUp'||e.key==='ArrowDown'){
+    const i=FN.findIndex(f=>f[0]===id)+(e.key==='ArrowDown'?1:-1);
+    if(i<0||i>=FN.length)return;$(FN[i][0]).scrollIntoView({behavior:'smooth'});e.preventDefault();
+  }
+});
+
+/* ================= データのエクスポート / インポート（端末間の移行・バックアップ） =================
+   ・保存済みのライブセット／プリセット／全ページ／音声ファイル、および「いまの環境」を1つの .json にまとめる
+   ・音声データ(ArrayBuffer)は base64 に変換して格納。別の端末・別ブラウザで読み込むと一発で復元 */
+const isSyncKey=k=>typeof k==='string'&&!k.startsWith('__');
+const u8b64=u=>{let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s)};
+const b64u8=t=>{const s=atob(t),u=new Uint8Array(s.length);for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u};
+const encJ=o=>JSON.stringify(o,(k,v)=>v instanceof ArrayBuffer?{__ab:u8b64(new Uint8Array(v))}:v);
+const decJ=t=>JSON.parse(t,(k,v)=>v&&typeof v==='object'&&typeof v.__ab==='string'?b64u8(v.__ab).buffer:v);
+const isMobile=()=>/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+let EXF=null;
+async function buildExport(){
+  const keys=(await dbKeys()).filter(isSyncKey),items=[];
+  for(const k of keys)items.push({key:k,data:await dbGet(k)});
+  const pack={app:'pocket-sampler',ver:2,exported:new Date().toISOString(),items,current:lsSer()};
+  const d=new Date(),p2=n=>String(n).padStart(2,'0');
+  const name='pocket-sampler-backup-'+d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'-'+p2(d.getHours())+p2(d.getMinutes())+'.json';
+  const blob=new Blob([encJ(pack)],{type:'application/json'});
+  return{file:new File([blob],name,{type:'application/json'}),n:items.length,ls:items.filter(i=>i.key.startsWith('ls:')).length};
+}
+function saveFile(f){
+  const a=document.createElement('a');a.href=URL.createObjectURL(f);a.download=f.name;
+  document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},5000);
+}
+async function doExport(){
+  const b=$('syOut');if(b._busy)return;b._busy=true;
+  try{
+    if(!EXF){toast('書き出しファイルを作成しています…');EXF=await buildExport()}
+    const f=EXF.file,info=EXF.n+'件（ライブセット '+EXF.ls+'）・'+(f.size/1048576).toFixed(1)+'MB';
+    if(isMobile()&&navigator.canShare&&navigator.canShare({files:[f]})){
+      try{await navigator.share({files:[f],title:'Pocket Sampler バックアップ'});EXF=null;toast('共有しました：'+info);return}
+      catch(e){
+        if(e&&e.name==='AbortError'){EXF=null;return}
+        if(e&&e.name==='NotAllowedError'){toast('ファイルの準備ができました。もう一度「エクスポート」を押してください');setTimeout(()=>{EXF=null},120000);return}
+      }
+    }
+    saveFile(f);EXF=null;toast('書き出しました：'+info);
+  }catch(e){EXF=null;toast('書き出しに失敗しました')}
+  finally{b._busy=false}
+}
+async function doImport(f){
+  try{
+    toast('読み込んでいます…');
+    const o=decJ(await f.text());
+    if(!o||o.app!=='pocket-sampler'||!Array.isArray(o.items))throw new Error('format');
+    let n=0;
+    for(const it of o.items){if(isSyncKey(it.key)&&it.data!==undefined){await dbPut(it.key,it.data);n++}}
+    if(o.current)await lsLoad(o.current);        /* いまの環境（全ページ・音声・XY・テルミン設定）も復元 */
+    $('lsi').value=LSn;lsUI();listLS();if($('preS').classList.contains('show'))listPresets();
+    toast(n+'件を読み込み、環境を復元しました');
+  }catch(e){toast('読み込めないファイルです')}
+}
+$('syOut').onclick=doExport;
+$('syIn').onclick=()=>twoTap($('syIn'),'もう一度タップ（現在の環境が置き換わります）',()=>$('syFile').click());
+$('syFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)doImport(f)};
 
 /* ---------- Init ---------- */
+
 
 
 S.pages=[blankPage()];render();

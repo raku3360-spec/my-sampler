@@ -1,6 +1,6 @@
 // オフラインでも起動できるよう、アプリ本体と MediaPipe のファイルをキャッシュします。
 // index.html を更新したら VERSION を上げてください。
-// build: swipe-only pages
+// build: export-import backup (Dropbox sync removed)
 const VERSION = 'sampler-v9';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
